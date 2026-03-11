@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TeamProvider } from '@/components/layout/TeamProvider'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { TopBar } from '@/components/layout/TopBar'
+import { TopNav } from '@/components/layout/TopNav'
 
 export default async function TeamLayout({
   children,
@@ -49,12 +48,11 @@ export default async function TeamLayout({
 
   return (
     <TeamProvider value={{ team, member, profile, role: member.role }}>
-      <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)" }}>
-        <Sidebar />
-        <div className="flex flex-col flex-1 min-w-0">
-          <TopBar />
-          <main className="flex-1 overflow-auto p-6">{children}</main>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg)' }}>
+        <TopNav />
+        <main style={{ flex: 1, padding: '32px', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
+          {children}
+        </main>
       </div>
     </TeamProvider>
   )
