@@ -1,0 +1,3947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venture Flow — AI Business Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ec;
+  --bg2: #ede9e0;
+  --surface: #ffffff;
+  --surface2: #f9f7f3;
+  --border: #ddd9d0;
+  --border-dark: #c8c3b8;
+  --ink: #1a1814;
+  --ink2: #4a4640;
+  --ink3: #8a857d;
+  --ink4: #b8b3ab;
+
+  --china: #c94040;
+  --china-dim: rgba(201,64,64,0.1);
+  --usa: #2a5ca8;
+  --usa-dim: rgba(42,92,168,0.1);
+  --idea: #2a7a4a;
+  --idea-dim: rgba(42,122,74,0.1);
+  --action: #7a4a2a;
+  --action-dim: rgba(122,74,42,0.1);
+  --gold: #b8960a;
+  --gold-dim: rgba(184,150,10,0.1);
+
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Geist Mono', monospace;
+  font-weight: 300;
+  min-height: 100vh;
+  font-size: 13px;
+}
+
+/* NAV */
+.nav {
+  background: var(--ink);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 2px solid var(--ink);
+}
+
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--bg);
+  letter-spacing: -0.3px;
+  padding: 16px 24px 16px 0;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.nav-brand span {
+  color: #c8a96e;
+}
+
+.nav-tab {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  padding: 18px 20px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.nav-tab .tab-icon { font-size: 13px; }
+
+.nav-tab:hover { color: rgba(255,255,255,0.75); }
+
+.nav-tab.active {
+  color: #fff;
+}
+
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: #c8a96e;
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.team-badge {
+  width: 34px; height: 28px;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  letter-spacing: 0.3px;
+}
+
+.team-badge.active-badge { border-color: #c8a96e; }
+
+.badge-a { background: #c94040; color: #fff; }
+.badge-b { background: #2a5ca8; color: #fff; }
+.badge-c { background: #2a7a4a; color: #fff; }
+
+.member-selector {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3px;
+}
+
+/* PAGES */
+.page { display: none; padding: 28px 32px; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.page-title em { font-style: italic; color: var(--ink3); }
+
+.page-sub {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* CARDS GRID */
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-full { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover { box-shadow: var(--shadow-lg); border-color: var(--border-dark); }
+
+.card-accent-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink2);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-stat {
+  font-family: 'Instrument Serif', serif;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.card-label {
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.3px;
+}
+
+/* FILTERS */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-chip {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.filter-chip:hover { border-color: var(--border-dark); color: var(--ink2); }
+.filter-chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.filter-chip.china-chip.active { background: var(--china); border-color: var(--china); color: #fff; }
+.filter-chip.usa-chip.active { background: var(--usa); border-color: var(--usa); color: #fff; }
+.filter-chip.idea-chip.active { background: var(--idea); border-color: var(--idea); color: #fff; }
+
+.search-input {
+  flex: 1;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px 5px 32px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--ink);
+  outline: none;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus { border-color: var(--border-dark); }
+.search-wrap { position: relative; flex: 1; min-width: 180px; }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink4); font-size: 13px; pointer-events: none; }
+
+/* CONTACT CARD */
+.contact-list { display: flex; flex-direction: column; gap: 10px; }
+
+.contact-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+}
+
+.contact-item:hover { box-shadow: var(--shadow); border-color: var(--border-dark); }
+
+.contact-avatar {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.contact-main { flex: 1; min-width: 0; }
+
+.contact-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.contact-role {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.contact-org {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink2);
+}
+
+.contact-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.ctag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+}
+
+.ctag-china { background: var(--china-dim); color: var(--china); }
+.ctag-usa { background: var(--usa-dim); color: var(--usa); }
+.ctag-vc { background: var(--gold-dim); color: var(--gold); }
+.ctag-founder { background: var(--idea-dim); color: var(--idea); }
+.ctag-robotics { background: rgba(100,60,140,0.1); color: #643c8c; }
+.ctag-conf { background: var(--action-dim); color: var(--action); }
+
+.contact-notes {
+  font-size: 11px;
+  color: var(--ink3);
+  line-height: 1.5;
+  margin-top: 6px;
+  font-style: italic;
+  border-top: 1px dashed var(--border);
+  padding-top: 6px;
+}
+
+.contact-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.warm-score {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.warm-hot { background: rgba(201,64,64,0.12); color: var(--china); }
+.warm-warm { background: rgba(184,150,10,0.12); color: var(--gold); }
+.warm-cold { background: var(--surface2); color: var(--ink3); }
+
+.contact-by {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+
+.contact-item-actions {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.contact-item:hover .contact-item-actions { opacity: 1; }
+
+/* IDEA CARDS */
+.idea-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.idea-card:hover { box-shadow: var(--shadow-lg); border-color: var(--border-dark); }
+
+.idea-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.idea-number {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  color: var(--ink4);
+  line-height: 1;
+  flex-shrink: 0;
+  font-style: italic;
+}
+
+.idea-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.3;
+  flex: 1;
+}
+
+.idea-body {
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+.idea-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.idea-score {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.score-item { text-align: center; }
+.score-val {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  line-height: 1;
+}
+.score-label { font-size: 9px; color: var(--ink3); letter-spacing: 0.3px; margin-top: 2px; }
+
+.idea-sources {
+  font-size: 10px;
+  color: var(--ink3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.source-chip {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+/* VOTE STARS */
+.vote-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.vote-label { font-size: 10px; color: var(--ink3); margin-right: 4px; letter-spacing: 0.3px; }
+
+.vote-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--ink3);
+}
+
+.vote-btn:hover { border-color: var(--border-dark); color: var(--ink2); }
+.vote-btn.voted { background: var(--idea); color: #fff; border-color: var(--idea); }
+
+/* ACTION ITEMS */
+.action-list { display: flex; flex-direction: column; gap: 10px; }
+
+.action-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: all 0.2s;
+}
+
+.action-item:hover { box-shadow: var(--shadow); border-color: var(--border-dark); }
+
+.action-check {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border-dark);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: transparent;
+}
+
+.action-check.checked {
+  background: var(--idea);
+  border-color: var(--idea);
+  color: #fff;
+}
+
+.action-main { flex: 1; }
+
+.action-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.action-item.done .action-title {
+  text-decoration: line-through;
+  color: var(--ink3);
+}
+
+.action-desc {
+  font-size: 11px;
+  color: var(--ink3);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.action-footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.due-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.due-urgent { background: rgba(201,64,64,0.1); color: var(--china); }
+.due-soon { background: var(--gold-dim); color: var(--gold); }
+.due-normal { background: var(--surface2); color: var(--ink3); }
+
+/* FORM ELEMENTS */
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+.form-label { font-size: 10px; color: var(--ink3); letter-spacing: 0.4px; text-transform: uppercase; }
+
+input[type="text"], textarea, select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--ink);
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--border-dark);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+
+select option { background: var(--surface); }
+
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary { background: var(--ink); color: var(--bg); }
+.btn-primary:hover { background: #2a2622; }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--ink2); }
+.btn-ghost:hover { border-color: var(--border-dark); background: var(--surface2); }
+.btn-danger { background: none; border: 1px solid rgba(201,64,64,0.3); color: var(--china); font-size: 10px; padding: 4px 10px; }
+.btn-danger:hover { background: var(--china-dim); }
+.btn-sm { padding: 4px 12px; font-size: 10px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(26,24,20,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-close {
+  background: none; border: none;
+  font-size: 20px; color: var(--ink3);
+  cursor: pointer; line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--bg2); color: var(--ink); }
+
+/* INSIGHT BOARD */
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+.insight-pill {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid;
+}
+
+.insight-pill-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.insight-pill-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.insight-pill-list li { font-size: 11px; line-height: 1.4; padding-left: 12px; position: relative; }
+.insight-pill-list li::before { content: '→'; position: absolute; left: 0; opacity: 0.5; }
+
+/* SECTION LABEL */
+.section-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin: 20px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* MATRIX */
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  height: 280px;
+  margin-bottom: 16px;
+}
+
+.matrix-cell {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+}
+
+.matrix-cell-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.matrix-idea {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--ink2);
+  cursor: default;
+}
+
+.axis-label-x, .axis-label-y {
+  font-size: 10px;
+  color: var(--ink4);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.axis-label-x { text-align: center; }
+.axis-label-y { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; }
+
+.matrix-wrap { display: flex; gap: 8px; }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 40px; color: var(--ink4); font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; }
+
+/* TAG badges for regions */
+.region-cn { background: var(--china-dim); color: var(--china); }
+.region-us { background: var(--usa-dim); color: var(--usa); }
+.region-both { background: var(--gold-dim); color: var(--gold); }
+
+/* PROGRESS */
+.progress { height: 4px; background: var(--bg2); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.progress-bar { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+/* NOTES & COMMENTS */
+.note-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.note-card:hover { box-shadow: var(--shadow-lg); border-color: var(--border-dark); }
+.note-card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+.note-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.note-title-text { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--ink); flex: 1; }
+.note-body { font-size: 12px; color: var(--ink2); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+.note-footer { display: flex; gap: 8px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.note-type-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.3px; }
+.note-linked { font-size: 10px; color: var(--ink3); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.note-linked:hover { color: var(--ink); }
+
+/* COMMENT THREAD */
+.comment-thread {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.comment-thread-toggle {
+  font-size: 11px;
+  color: var(--ink3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  font-family: 'Geist Mono', monospace;
+  transition: color 0.15s;
+}
+.comment-thread-toggle:hover { color: var(--ink); }
+.comment-item {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  animation: itemIn 0.2s ease;
+}
+@keyframes itemIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+.comment-avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.comment-content { flex: 1; min-width: 0; }
+.comment-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 3px; }
+.comment-author { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 10px; }
+.comment-time { font-size: 10px; color: var(--ink4); }
+.comment-text { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+.comment-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 6px;
+}
+.comment-input-row textarea {
+  min-height: 36px;
+  max-height: 100px;
+  font-size: 12px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border-color: var(--border);
+  border-radius: 8px;
+  resize: none;
+}
+.comment-send-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  height: 36px;
+}
+.comment-send-btn:hover { background: #2a2622; }
+
+/* NOTE TYPE COLORS */
+.ntype-general { background: var(--surface2); color: var(--ink3); }
+.ntype-insight { background: var(--idea-dim); color: var(--idea); }
+.ntype-risk { background: rgba(201,64,64,0.1); color: var(--china); }
+.ntype-opportunity { background: var(--gold-dim); color: var(--gold); }
+.ntype-question { background: var(--usa-dim); color: var(--usa); }
+
+/* PINNED NOTE */
+.note-card.pinned { border-color: var(--gold); background: rgba(184,150,10,0.02); }
+.pin-indicator { font-size: 11px; }
+
+/* NOTES FILTER BAR + QUICK COMPOSE */
+.quick-compose {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.quick-compose-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+}
+.note-type-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.ntype-btn {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--ink3);
+  cursor: pointer;
+  font-family: 'Geist Mono', monospace;
+  transition: all 0.15s;
+}
+.ntype-btn.sel-general { background: var(--surface2); color: var(--ink2); border-color: var(--border-dark); }
+.ntype-btn.sel-insight { background: var(--idea-dim); color: var(--idea); border-color: var(--idea); }
+.ntype-btn.sel-risk { background: rgba(201,64,64,0.1); color: var(--china); border-color: var(--china); }
+.ntype-btn.sel-opportunity { background: var(--gold-dim); color: var(--gold); border-color: var(--gold); }
+.ntype-btn.sel-question { background: var(--usa-dim); color: var(--usa); border-color: var(--usa); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">Venture<span>Flow</span></div>
+  <button class="nav-tab active" onclick="showPage('dashboard')" id="tab-dashboard">
+    <span class="tab-icon">◈</span> Dashboard
+  </button>
+  <button class="nav-tab" onclick="showPage('contacts')" id="tab-contacts">
+    <span class="tab-icon">◉</span> Contacts
+  </button>
+  <button class="nav-tab" onclick="showPage('ideas')" id="tab-ideas">
+    <span class="tab-icon">◎</span> Ideas
+  </button>
+  <button class="nav-tab" onclick="showPage('actions')" id="tab-actions">
+    <span class="tab-icon">▷</span> Next Steps
+  </button>
+  <button class="nav-tab" onclick="showPage('synthesis')" id="tab-synthesis">
+    <span class="tab-icon">⬡</span> Synthesis
+  </button>
+  <button class="nav-tab" onclick="showPage('notes')" id="tab-notes">
+    <span class="tab-icon">✎</span> Notes
+  </button>
+  <div class="nav-right">
+    <button class="btn" onclick="openGlobalSearch()" id="global-search-btn" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);font-size:10px;padding:6px 14px;gap:6px;letter-spacing:0.2px" title="Global search (Ctrl+K)">
+      ⌕ Search
+    </button>
+    <button class="btn" onclick="openScanModal('namecard')" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);font-size:10px;padding:6px 12px;gap:5px">
+      📷 Scan Card
+    </button>
+    <button class="btn" onclick="openScanModal('notes')" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);font-size:10px;padding:6px 12px;gap:5px">
+      📄 Import Notes
+    </button>
+    <span class="member-selector">viewing as</span>
+    <div class="team-badges">
+      <div class="team-badge badge-a active-badge" title="KT" onclick="setMember('A',this)">KT</div>
+      <div class="team-badge badge-b" title="DZ" onclick="setMember('B',this)">DZ</div>
+      <div class="team-badge badge-c" title="JW" onclick="setMember('C',this)">JW</div>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div>
+      <div class="page-title">AI Venture Intelligence <em>Hub</em></div>
+      <div class="page-sub">3-person team · China & USA research · AI space</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'Instrument Serif',serif;font-size:13px;color:var(--ink3);font-style:italic" id="dash-date"></div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-accent-top" style="background:linear-gradient(90deg,var(--china),var(--usa))"></div>
+      <div class="card-title">📋 Total Contacts</div>
+      <div class="card-stat" id="dash-contacts">0</div>
+      <div class="card-label">across China & USA networks</div>
+      <div class="progress" style="margin-top:10px">
+        <div class="progress-bar" id="prog-contacts" style="background:linear-gradient(90deg,var(--china),var(--usa));width:0%"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-accent-top" style="background:var(--idea)"></div>
+      <div class="card-title">💡 Ideas Logged</div>
+      <div class="card-stat" id="dash-ideas">0</div>
+      <div class="card-label">AI business concepts</div>
+      <div class="progress" style="margin-top:10px">
+        <div class="progress-bar" id="prog-ideas" style="background:var(--idea);width:0%"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-accent-top" style="background:var(--action)"></div>
+      <div class="card-title">▷ Next Steps</div>
+      <div class="card-stat" id="dash-actions">0</div>
+      <div class="card-label">open action items</div>
+      <div class="progress" style="margin-top:10px">
+        <div class="progress-bar" id="prog-actions" style="background:var(--action);width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">🗺 Contact Network Map</div>
+      <div id="dash-network-map" style="display:flex;flex-wrap:wrap;gap:8px;padding:4px 0"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 Hot Contacts (Follow Up)</div>
+      <div id="dash-hot-contacts" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Team Activity Feed</div>
+  <div id="dash-activity" style="display:flex;flex-direction:column;gap:8px"></div>
+</div>
+
+<!-- CONTACTS -->
+<div class="page" id="page-contacts">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Contact <em>Intelligence</em></div>
+      <div class="page-sub">Robotics · VCs · Founders · Conferences — China & USA</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('contact')">+ Add Contact</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterContacts('all',this)">All</button>
+    <button class="filter-chip china-chip" onclick="filterContacts('china',this)">🇨🇳 China</button>
+    <button class="filter-chip usa-chip" onclick="filterContacts('usa',this)">🇺🇸 USA</button>
+    <button class="filter-chip" onclick="filterContacts('vc',this)">💰 VC</button>
+    <button class="filter-chip" onclick="filterContacts('founder',this)">🚀 Founder</button>
+    <button class="filter-chip" onclick="filterContacts('robotics',this)">🤖 Robotics</button>
+    <button class="filter-chip" onclick="filterContacts('hot',this)">🔥 Hot</button>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" type="text" id="contact-search" placeholder="search name, org, notes..." oninput="renderContacts()">
+    </div>
+  </div>
+
+  <div class="contact-list" id="contact-list"></div>
+</div>
+
+<!-- IDEAS -->
+<div class="page" id="page-ideas">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Idea <em>Board</em></div>
+      <div class="page-sub">AI business concepts — from field research to thesis</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('idea')">+ Log Idea</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterIdeas('all',this)">All</button>
+    <button class="filter-chip china-chip" onclick="filterIdeas('china',this)">🇨🇳 China-origin</button>
+    <button class="filter-chip usa-chip" onclick="filterIdeas('usa',this)">🇺🇸 USA-origin</button>
+    <button class="filter-chip idea-chip" onclick="filterIdeas('top',this)">⭐ Team Favorites</button>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" type="text" id="idea-search" placeholder="search ideas..." oninput="renderIdeas()">
+    </div>
+  </div>
+
+  <div id="ideas-list" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="page" id="page-actions">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Next <em>Steps</em></div>
+      <div class="page-sub">Team action items, owners, deadlines</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('action')">+ Add Action</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterActions('all',this)">All</button>
+    <button class="filter-chip" onclick="filterActions('A',this)">KT</button>
+    <button class="filter-chip" onclick="filterActions('B',this)">DZ</button>
+    <button class="filter-chip" onclick="filterActions('C',this)">JW</button>
+    <button class="filter-chip" onclick="filterActions('open',this)">Open</button>
+    <button class="filter-chip" onclick="filterActions('done',this)">Done</button>
+  </div>
+
+  <div class="action-list" id="action-list"></div>
+</div>
+
+<!-- SYNTHESIS -->
+<div class="page" id="page-synthesis">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Strategic <em>Synthesis</em></div>
+      <div class="page-sub">Patterns, signals, thesis — connecting the dots</div>
+    </div>
+  </div>
+
+  <div class="section-label">Signals from Field Research</div>
+  <div class="insights-grid" id="synthesis-insights">
+    <div class="insight-pill" style="background:var(--china-dim);border-color:rgba(201,64,64,0.2)">
+      <div class="insight-pill-title" style="color:var(--china)">🇨🇳 China Signals</div>
+      <ul class="insight-pill-list" style="color:var(--ink2)" id="insight-china">
+        <li>Add contacts & ideas to see patterns</li>
+      </ul>
+    </div>
+    <div class="insight-pill" style="background:var(--usa-dim);border-color:rgba(42,92,168,0.2)">
+      <div class="insight-pill-title" style="color:var(--usa)">🇺🇸 USA Signals</div>
+      <ul class="insight-pill-list" style="color:var(--ink2)" id="insight-usa">
+        <li>Add contacts & ideas to see patterns</li>
+      </ul>
+    </div>
+    <div class="insight-pill" style="background:var(--idea-dim);border-color:rgba(42,122,74,0.2)">
+      <div class="insight-pill-title" style="color:var(--idea)">💡 Idea Themes</div>
+      <ul class="insight-pill-list" style="color:var(--ink2)" id="insight-themes">
+        <li>Log ideas to surface themes</li>
+      </ul>
+    </div>
+    <div class="insight-pill" style="background:var(--gold-dim);border-color:rgba(184,150,10,0.2)">
+      <div class="insight-pill-title" style="color:var(--gold)">🔗 Connections to Make</div>
+      <ul class="insight-pill-list" style="color:var(--ink2)" id="insight-connect">
+        <li>Map contacts to ideas to see gaps</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">Opportunity Matrix</div>
+  <div style="font-size:11px;color:var(--ink3);margin-bottom:12px">Ideas mapped by market potential vs execution feasibility</div>
+  <div class="matrix-wrap">
+    <div class="axis-label-y">← Lower &nbsp;&nbsp; Market Potential &nbsp;&nbsp; Higher →</div>
+    <div style="flex:1">
+      <div class="matrix-grid" id="synthesis-matrix">
+        <div class="matrix-cell" style="background:rgba(42,122,74,0.04)">
+          <div class="matrix-cell-label" style="color:var(--idea)">⭐ High Potential / High Feasibility</div>
+          <div id="mx-hh"></div>
+        </div>
+        <div class="matrix-cell" style="background:rgba(184,150,10,0.04)">
+          <div class="matrix-cell-label" style="color:var(--gold)">🔭 High Potential / Low Feasibility</div>
+          <div id="mx-hl"></div>
+        </div>
+        <div class="matrix-cell" style="background:rgba(42,92,168,0.04)">
+          <div class="matrix-cell-label" style="color:var(--usa)">🛠 Low Potential / High Feasibility</div>
+          <div id="mx-lh"></div>
+        </div>
+        <div class="matrix-cell" style="background:rgba(0,0,0,0.02)">
+          <div class="matrix-cell-label" style="color:var(--ink3)">⬜ Low / Low</div>
+          <div id="mx-ll"></div>
+        </div>
+      </div>
+      <div class="axis-label-x">← Lower &nbsp;&nbsp; Execution Feasibility &nbsp;&nbsp; Higher →</div>
+    </div>
+  </div>
+
+  <div class="section-label">Hypothesis Builder</div>
+  <div class="card">
+    <div class="card-title">Draft Venture Thesis</div>
+    <textarea id="thesis-text" placeholder="We believe the best AI opportunity is in... [synthesize your signals, contacts, and ideas into a clear thesis statement]" style="min-height:120px;font-family:'Instrument Serif',serif;font-size:15px;line-height:1.7;background:var(--surface);border:none;border-bottom:1px solid var(--border);border-radius:0;padding:8px 0"></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="saveThesis()">Save Thesis</button>
+      <span style="font-size:11px;color:var(--ink4);align-self:center" id="thesis-saved"></span>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="page" id="page-notes">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Team <em>Notes</em></div>
+      <div class="page-sub">Shared observations, insights, risks, questions — annotate anything</div>
+    </div>
+  </div>
+
+  <!-- Quick Compose -->
+  <div class="quick-compose">
+    <div class="quick-compose-title">✎ Compose Note</div>
+    <div class="form-row" style="margin-bottom:8px">
+      <div class="form-group">
+        <div class="form-label">Title</div>
+        <input type="text" id="n-title" placeholder="e.g. Key takeaway from Unitree meeting">
+      </div>
+      <div class="form-group" style="flex:0;min-width:110px">
+        <div class="form-label">Linked To</div>
+        <select id="n-linked">
+          <option value="">— none —</option>
+          <optgroup label="Contacts" id="n-linked-contacts"></optgroup>
+          <optgroup label="Ideas" id="n-linked-ideas"></optgroup>
+          <optgroup label="Actions" id="n-linked-actions"></optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <div class="form-label">Note Body</div>
+      <textarea id="n-body" placeholder="Write your observation, insight, risk, or question..." style="min-height:80px"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="note-type-selector">
+        <button class="ntype-btn sel-general" data-ntype="general" onclick="selectNType(this)">📝 General</button>
+        <button class="ntype-btn" data-ntype="insight" onclick="selectNType(this)">💡 Insight</button>
+        <button class="ntype-btn" data-ntype="risk" onclick="selectNType(this)">⚠ Risk</button>
+        <button class="ntype-btn" data-ntype="opportunity" onclick="selectNType(this)">🌟 Opportunity</button>
+        <button class="ntype-btn" data-ntype="question" onclick="selectNType(this)">❓ Question</button>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <select id="n-by" style="width:auto;padding:6px 10px;font-size:11px">
+          <option value="A">KT</option>
+          <option value="B">DZ</option>
+          <option value="C">JW</option>
+        </select>
+        <button class="btn btn-primary" onclick="saveNote()">+ Add Note</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterNotes('all',this)">All</button>
+    <button class="filter-chip" onclick="filterNotes('general',this)">📝 General</button>
+    <button class="filter-chip idea-chip" onclick="filterNotes('insight',this)">💡 Insights</button>
+    <button class="filter-chip china-chip" onclick="filterNotes('risk',this)">⚠ Risks</button>
+    <button class="filter-chip" onclick="filterNotes('opportunity',this)" style="background:none">🌟 Opportunities</button>
+    <button class="filter-chip usa-chip" onclick="filterNotes('question',this)">❓ Questions</button>
+    <button class="filter-chip" onclick="filterNotes('pinned',this)">📌 Pinned</button>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" type="text" id="notes-search" placeholder="search notes..." oninput="renderNotes()">
+    </div>
+  </div>
+
+  <div id="notes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+</div>
+
+<!-- MODALS -->
+<!-- Contact Modal -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <div class="modal-title">
+      Add Contact <button class="modal-close" onclick="closeModal('contact')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Full Name *</div>
+        <input type="text" id="c-name" placeholder="Dr. Zhang Wei">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Organization *</div>
+        <input type="text" id="c-org" placeholder="Unitree Robotics">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Role / Title</div>
+        <input type="text" id="c-role" placeholder="Co-founder & CTO">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Region</div>
+        <select id="c-region">
+          <option value="china">🇨🇳 China</option>
+          <option value="usa">🇺🇸 USA</option>
+          <option value="both">🌐 Both</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Type</div>
+        <select id="c-type">
+          <option value="vc">💰 Venture Capital</option>
+          <option value="founder">🚀 Founder</option>
+          <option value="robotics">🤖 Robotics Co.</option>
+          <option value="conf">🎤 Conference</option>
+          <option value="advisor">🧠 Advisor</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Relationship Heat</div>
+        <select id="c-warm">
+          <option value="hot">🔥 Hot — Ready to engage</option>
+          <option value="warm">☀ Warm — Good contact</option>
+          <option value="cold">❄ Cold — Early stage</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:1">
+        <div class="form-label">Email / LinkedIn</div>
+        <input type="text" id="c-email" placeholder="email or linkedin URL">
+      </div>
+      <div class="form-group" style="flex:0;min-width:80px">
+        <div class="form-label">Added By</div>
+        <select id="c-by">
+          <option value="A">KT</option>
+          <option value="B">DZ</option>
+          <option value="C">JW</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:16px">
+      <div class="form-label">Notes / Key insights from interaction</div>
+      <textarea id="c-notes" placeholder="What was the key insight? What are they excited about? Potential synergy?"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('contact')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- Idea Modal -->
+<div class="modal-overlay" id="modal-idea">
+  <div class="modal">
+    <div class="modal-title">
+      Log Idea <button class="modal-close" onclick="closeModal('idea')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <div class="form-label">Idea Title *</div>
+      <input type="text" id="i-title" placeholder="e.g. AI-powered robotic inspection for factories">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <div class="form-label">Description</div>
+      <textarea id="i-desc" placeholder="What's the core concept? What problem does it solve? What's the market?"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Origin</div>
+        <select id="i-origin">
+          <option value="china">🇨🇳 China Research</option>
+          <option value="usa">🇺🇸 USA Research</option>
+          <option value="both">🌐 Cross-market</option>
+          <option value="internal">💭 Internal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Category</div>
+        <select id="i-cat">
+          <option value="robotics">🤖 Robotics + AI</option>
+          <option value="platform">🏗 AI Platform / Infra</option>
+          <option value="vertical">📊 Vertical AI</option>
+          <option value="data">📦 AI Data / Tools</option>
+          <option value="consumer">👤 Consumer AI</option>
+          <option value="b2b">🏢 B2B AI</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Market Potential (1–5)</div>
+        <select id="i-market">
+          <option value="5">5 — Massive TAM</option>
+          <option value="4">4 — Large</option>
+          <option value="3">3 — Medium</option>
+          <option value="2">2 — Niche</option>
+          <option value="1">1 — Small</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Execution Feasibility (1–5)</div>
+        <select id="i-exec">
+          <option value="5">5 — Very feasible</option>
+          <option value="4">4 — Feasible</option>
+          <option value="3">3 — Moderate</option>
+          <option value="2">2 — Hard</option>
+          <option value="1">1 — Very hard</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <div class="form-label">Source / Inspired By</div>
+      <input type="text" id="i-source" placeholder="e.g. Meeting with Sequoia, Unitree conference talk">
+    </div>
+    <div class="form-group" style="margin-bottom:16px">
+      <div class="form-label">Logged By</div>
+      <select id="i-by">
+        <option value="A">KT</option>
+        <option value="B">DZ</option>
+        <option value="C">JW</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('idea')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveIdea()">Save Idea</button>
+    </div>
+  </div>
+</div>
+
+<!-- Action Modal -->
+<div class="modal-overlay" id="modal-action">
+  <div class="modal">
+    <div class="modal-title">
+      Add Action Item <button class="modal-close" onclick="closeModal('action')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <div class="form-label">Action Title *</div>
+      <input type="text" id="a-title" placeholder="e.g. Follow up with Zhang Wei re: pilot partnership">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <div class="form-label">Details</div>
+      <textarea id="a-desc" placeholder="What exactly needs to happen? What's the expected output?"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Owner</div>
+        <select id="a-owner">
+          <option value="A">KT</option>
+          <option value="B">DZ</option>
+          <option value="C">JW</option>
+          <option value="team">All Team</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Due</div>
+        <select id="a-due">
+          <option value="urgent">🔴 This week</option>
+          <option value="soon">🟡 2 weeks</option>
+          <option value="normal">🟢 This month</option>
+          <option value="later">⚪ No deadline</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:16px">
+      <div class="form-label">Category</div>
+      <select id="a-cat">
+        <option value="contact">📞 Contact Follow-up</option>
+        <option value="research">🔍 Research</option>
+        <option value="validate">✅ Validate Idea</option>
+        <option value="meeting">🤝 Set Meeting</option>
+        <option value="build">🛠 Build / Execute</option>
+        <option value="decision">🎯 Team Decision</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('action')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAction()">Save Action</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────
+let data = { contacts:[], ideas:[], actions:[], notes:[], thesis:'' };
+let currentMember = 'A';
+let contactFilter = 'all', ideaFilter = 'all', actionFilter = 'all';
+
+const MEMBER_COLORS = { A:'#c94040', B:'#2a5ca8', C:'#2a7a4a' };
+
+function load() {
+  try {
+    const s = localStorage.getItem('vf-data-v1');
+    if (s) data = {...data, ...JSON.parse(s)};
+    document.getElementById('thesis-text').value = data.thesis || '';
+  } catch(e) {}
+}
+
+function save() { localStorage.setItem('vf-data-v1', JSON.stringify(data)); }
+
+// ─── NAVIGATION ──────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if (name==='dashboard') renderDashboard();
+  if (name==='contacts') renderContacts();
+  if (name==='ideas') renderIdeas();
+  if (name==='actions') renderActions();
+  if (name==='synthesis') renderSynthesis();
+  if (name==='notes') { populateNoteLinkedDropdown(); renderNotes(); }
+}
+
+function setMember(m, el) {
+  currentMember = m;
+  document.querySelectorAll('.team-badge').forEach(b => b.classList.remove('active-badge'));
+  el.classList.add('active-badge');
+  document.querySelectorAll('[id$="-by"]').forEach(s => { if(s.tagName==='SELECT') s.value = m; });
+}
+
+// ─── MODALS ──────────────────────────────────────────────────────
+function openModal(type) {
+  document.getElementById('modal-'+type).classList.add('open');
+  const byEl = document.getElementById({contact:'c-by',idea:'i-by',action:'a-by'}[type]);
+  if (byEl) byEl.value = currentMember;
+}
+
+function closeModal(type) {
+  document.getElementById('modal-'+type).classList.remove('open');
+  clearForm(type);
+}
+
+function clearForm(type) {
+  const pfx = {contact:'c',idea:'i',action:'a'}[type];
+  document.querySelectorAll(`[id^="${pfx}-"]`).forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = '';
+  });
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ─── CONTACTS ────────────────────────────────────────────────────
+function saveContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const org = document.getElementById('c-org').value.trim();
+  if (!name) { document.getElementById('c-name').focus(); return; }
+  data.contacts.push({
+    id: Date.now(),
+    name, org,
+    role: document.getElementById('c-role').value.trim(),
+    region: document.getElementById('c-region').value,
+    type: document.getElementById('c-type').value,
+    warm: document.getElementById('c-warm').value,
+    email: document.getElementById('c-email').value.trim(),
+    by: document.getElementById('c-by').value,
+    notes: document.getElementById('c-notes').value.trim(),
+    ts: new Date().toISOString()
+  });
+  save();
+  closeModal('contact');
+  renderContacts();
+  updateDashStats();
+}
+
+function deleteContact(id) {
+  data.contacts = data.contacts.filter(c => c.id !== id);
+  save(); renderContacts(); updateDashStats();
+}
+
+function filterContacts(f, el) {
+  contactFilter = f;
+  document.querySelectorAll('#page-contacts .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderContacts();
+}
+
+function renderContacts() {
+  const q = document.getElementById('contact-search').value.toLowerCase();
+  let items = [...data.contacts];
+  if (contactFilter === 'china') items = items.filter(c => c.region === 'china');
+  else if (contactFilter === 'usa') items = items.filter(c => c.region === 'usa');
+  else if (contactFilter === 'vc') items = items.filter(c => c.type === 'vc');
+  else if (contactFilter === 'founder') items = items.filter(c => c.type === 'founder');
+  else if (contactFilter === 'robotics') items = items.filter(c => c.type === 'robotics');
+  else if (contactFilter === 'hot') items = items.filter(c => c.warm === 'hot');
+  if (q) items = items.filter(c =>
+    [c.name,c.org,c.role,c.notes,c.email].join(' ').toLowerCase().includes(q));
+
+  const list = document.getElementById('contact-list');
+  if (!items.length) {
+    list.innerHTML = `<div class="empty">No contacts yet — add your first connection</div>`;
+    return;
+  }
+
+  const regionMap = { china:'region-cn', usa:'region-us', both:'region-both' };
+  const typeMap = {
+    vc:'ctag-vc', founder:'ctag-founder', robotics:'ctag-robotics',
+    conf:'ctag-conf', advisor:'ctag-vc', other:''
+  };
+  const warmMap = { hot:'warm-hot', warm:'warm-warm', cold:'warm-cold' };
+  const warmLabel = { hot:'🔥 Hot', warm:'☀ Warm', cold:'❄ Cold' };
+  const typeEmoji = { vc:'💰', founder:'🚀', robotics:'🤖', conf:'🎤', advisor:'🧠', other:'◉' };
+  const regionEmoji = { china:'🇨🇳', usa:'🇺🇸', both:'🌐' };
+  const bgColors = [
+    '#c94040','#2a5ca8','#2a7a4a','#7a4a2a','#4a2a7a','#2a7a7a',
+    '#6a4040','#40406a','#406a40','#8a6020'
+  ];
+
+  list.innerHTML = items.map((c,i) => {
+    const initials = c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const bg = bgColors[i % bgColors.length];
+    return `
+    <div class="contact-item" id="ci-${c.id}">
+      <div class="contact-avatar" style="background:${bg}">${initials}</div>
+      <div class="contact-main">
+        <div class="contact-name">${esc(c.name)}</div>
+        <div class="contact-role">${esc(c.role||'—')}</div>
+        <div class="contact-org">${esc(c.org)}</div>
+        <div class="contact-tags">
+          <span class="ctag ${regionMap[c.region]||''}">${regionEmoji[c.region]} ${c.region}</span>
+          <span class="ctag ${typeMap[c.type]||''}">${typeEmoji[c.type]||'◉'} ${c.type}</span>
+          ${c.email?`<span class="ctag" style="background:var(--surface2);color:var(--ink3)">✉ ${esc(c.email)}</span>`:''}
+        </div>
+        ${c.notes?`<div class="contact-notes">"${esc(c.notes)}"</div>`:''}
+        ${buildCommentThread('contact', c.id, c.comments)}
+      </div>
+      <div class="contact-meta">
+        <span class="warm-score ${warmMap[c.warm]}">${warmLabel[c.warm]}</span>
+        <div class="contact-by" style="background:${MEMBER_COLORS[c.by]||'#888'};font-size:8px" title="Added by ${c.by==='A'?'KT':c.by==='B'?'DZ':'JW'}">${c.by==='A'?'KT':c.by==='B'?'DZ':'JW'}</div>
+      </div>
+      <div class="contact-item-actions">
+        <button class="btn btn-danger" onclick="deleteContact(${c.id})">remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── IDEAS ────────────────────────────────────────────────────────
+function saveIdea() {
+  const title = document.getElementById('i-title').value.trim();
+  if (!title) { document.getElementById('i-title').focus(); return; }
+  data.ideas.push({
+    id: Date.now(),
+    title,
+    desc: document.getElementById('i-desc').value.trim(),
+    origin: document.getElementById('i-origin').value,
+    cat: document.getElementById('i-cat').value,
+    market: parseInt(document.getElementById('i-market').value),
+    exec: parseInt(document.getElementById('i-exec').value),
+    source: document.getElementById('i-source').value.trim(),
+    by: document.getElementById('i-by').value,
+    votes: [],
+    ts: new Date().toISOString()
+  });
+  save();
+  closeModal('idea');
+  renderIdeas();
+  updateDashStats();
+}
+
+function deleteIdea(id) {
+  data.ideas = data.ideas.filter(i => i.id !== id);
+  save(); renderIdeas(); updateDashStats();
+}
+
+function voteIdea(id) {
+  const idea = data.ideas.find(i => i.id === id);
+  if (!idea) return;
+  const idx = idea.votes.indexOf(currentMember);
+  if (idx >= 0) idea.votes.splice(idx, 1);
+  else idea.votes.push(currentMember);
+  save(); renderIdeas();
+}
+
+function filterIdeas(f, el) {
+  ideaFilter = f;
+  document.querySelectorAll('#page-ideas .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderIdeas();
+}
+
+function renderIdeas() {
+  const q = document.getElementById('idea-search').value.toLowerCase();
+  let items = [...data.ideas];
+  if (ideaFilter === 'china') items = items.filter(i => i.origin === 'china');
+  else if (ideaFilter === 'usa') items = items.filter(i => i.origin === 'usa');
+  else if (ideaFilter === 'top') items = items.filter(i => i.votes.length > 0);
+  if (q) items = items.filter(i =>
+    [i.title,i.desc,i.source].join(' ').toLowerCase().includes(q));
+
+  const container = document.getElementById('ideas-list');
+  if (!items.length) {
+    container.innerHTML = `<div class="empty" style="grid-column:1/-1">No ideas yet — log your first AI concept</div>`;
+    return;
+  }
+
+  const originColor = { china:'var(--china)', usa:'var(--usa)', both:'var(--gold)', internal:'var(--idea)' };
+  const originLabel = { china:'🇨🇳 China', usa:'🇺🇸 USA', both:'🌐 Cross', internal:'💭 Internal' };
+  const catEmoji = { robotics:'🤖', platform:'🏗', vertical:'📊', data:'📦', consumer:'👤', b2b:'🏢' };
+
+  container.innerHTML = items.map((idea, idx) => {
+    const voted = idea.votes.includes(currentMember);
+    const score = idea.market + idea.exec;
+    return `
+    <div class="idea-card">
+      <div class="card-accent-top" style="background:${originColor[idea.origin]}"></div>
+      <div class="idea-header">
+        <div class="idea-number">${String(idx+1).padStart(2,'0')}</div>
+        <div class="idea-title">${esc(idea.title)}</div>
+      </div>
+      ${idea.desc?`<div class="idea-body">${esc(idea.desc)}</div>`:''}
+      <div class="idea-score">
+        <div class="score-item">
+          <div class="score-val" style="color:var(--idea)">${idea.market}</div>
+          <div class="score-label">MARKET</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" style="color:var(--usa)">${idea.exec}</div>
+          <div class="score-label">EXEC</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" style="color:${score>=8?'var(--idea)':score>=6?'var(--gold)':'var(--ink3)'}">${score}</div>
+          <div class="score-label">TOTAL</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" style="color:var(--action);font-size:16px">${idea.votes.length} ★</div>
+          <div class="score-label">VOTES</div>
+        </div>
+      </div>
+      <div class="idea-meta">
+        <span class="ctag" style="background:${originColor[idea.origin]}22;color:${originColor[idea.origin]}">${originLabel[idea.origin]}</span>
+        <span class="ctag ctag-founder">${catEmoji[idea.cat]||'◎'} ${idea.cat}</span>
+        ${idea.source?`<span class="ctag" style="background:var(--surface2);color:var(--ink3)">via ${esc(idea.source)}</span>`:''}
+      </div>
+      <div class="vote-bar">
+        <span class="vote-label">Team vote:</span>
+        ${['A','B','C'].map(m => `
+          <div style="display:inline-flex;align-items:center;gap:4px">
+            <div style="width:16px;height:16px;border-radius:50%;background:${idea.votes.includes(m)?MEMBER_COLORS[m]:'var(--border)'};font-family:Syne,sans-serif;font-weight:700;font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center">${idea.votes.includes(m)?(m==='A'?'KT':m==='B'?'DZ':'JW'):''}</div>
+          </div>`).join('')}
+        <button class="vote-btn ${voted?'voted':''}" onclick="voteIdea(${idea.id})">${voted?'★ voted':'☆ vote'}</button>
+        <button class="btn btn-danger" style="margin-left:auto" onclick="deleteIdea(${idea.id})">remove</button>
+      </div>
+      ${buildCommentThread('idea', idea.id, idea.comments)}
+    </div>`;
+  }).join('');
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────
+function saveAction() {
+  const title = document.getElementById('a-title').value.trim();
+  if (!title) { document.getElementById('a-title').focus(); return; }
+  data.actions.push({
+    id: Date.now(),
+    title,
+    desc: document.getElementById('a-desc').value.trim(),
+    owner: document.getElementById('a-owner').value,
+    due: document.getElementById('a-due').value,
+    cat: document.getElementById('a-cat').value,
+    done: false,
+    ts: new Date().toISOString()
+  });
+  save();
+  closeModal('action');
+  renderActions();
+  updateDashStats();
+}
+
+function toggleAction(id) {
+  const a = data.actions.find(x => x.id === id);
+  if (a) { a.done = !a.done; save(); renderActions(); updateDashStats(); }
+}
+
+function deleteAction(id) {
+  data.actions = data.actions.filter(x => x.id !== id);
+  save(); renderActions(); updateDashStats();
+}
+
+function filterActions(f, el) {
+  actionFilter = f;
+  document.querySelectorAll('#page-actions .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderActions();
+}
+
+function renderActions() {
+  let items = [...data.actions];
+  if (['A','B','C'].includes(actionFilter)) items = items.filter(a => a.owner === actionFilter || a.owner === 'team');
+  else if (actionFilter === 'open') items = items.filter(a => !a.done);
+  else if (actionFilter === 'done') items = items.filter(a => a.done);
+  items.sort((a,b) => {
+    const po = {urgent:0,soon:1,normal:2,later:3};
+    if (a.done !== b.done) return a.done - b.done;
+    return (po[a.due]||3) - (po[b.due]||3);
+  });
+
+  const list = document.getElementById('action-list');
+  if (!items.length) {
+    list.innerHTML = `<div class="empty">No actions yet — add your first next step</div>`;
+    return;
+  }
+
+  const dueMap = {urgent:'due-urgent',soon:'due-soon',normal:'due-normal',later:'due-normal'};
+  const dueLabel = {urgent:'🔴 This week',soon:'🟡 2 weeks',normal:'🟢 This month',later:'⚪ No deadline'};
+  const catEmoji = {contact:'📞',research:'🔍',validate:'✅',meeting:'🤝',build:'🛠',decision:'🎯'};
+  const ownerColor = {A:'#c94040',B:'#2a5ca8',C:'#2a7a4a',team:'#7a4a2a'};
+
+  list.innerHTML = items.map(a => `
+    <div class="action-item${a.done?' done':''}">
+      <div class="action-check${a.done?' checked':''}" onclick="toggleAction(${a.id})">${a.done?'✓':''}</div>
+      <div class="action-main">
+        <div class="action-title">${esc(a.title)}</div>
+        ${a.desc?`<div class="action-desc">${esc(a.desc)}</div>`:''}
+        <div class="action-footer">
+          <span class="due-badge ${dueMap[a.due]}">${dueLabel[a.due]}</span>
+          <span class="ctag" style="background:${ownerColor[a.owner]}22;color:${ownerColor[a.owner]}">${a.owner === 'team' ? '👥 All' : '◉ Member '+a.owner}</span>
+          <span class="ctag" style="background:var(--surface2);color:var(--ink3)">${catEmoji[a.cat]||'◎'} ${a.cat}</span>
+          <button class="btn btn-danger" style="margin-left:auto" onclick="deleteAction(${a.id})">remove</button>
+        </div>
+        ${buildCommentThread('action', a.id, a.comments)}
+      </div>
+    </div>`).join('');
+}
+
+// ─── SYNTHESIS ───────────────────────────────────────────────────
+function renderSynthesis() {
+  // China signals
+  const cnContacts = data.contacts.filter(c => c.region==='china' || c.region==='both');
+  const usContacts = data.contacts.filter(c => c.region==='usa' || c.region==='both');
+
+  const chinaEl = document.getElementById('insight-china');
+  const usaEl = document.getElementById('insight-usa');
+
+  if (cnContacts.length) {
+    const types = {};
+    cnContacts.forEach(c => types[c.type] = (types[c.type]||0)+1);
+    chinaEl.innerHTML = Object.entries(types).map(([t,n]) =>
+      `<li>${n} ${t} contact${n>1?'s':''}</li>`).join('');
+    const hot = cnContacts.filter(c=>c.warm==='hot');
+    if (hot.length) chinaEl.innerHTML += `<li>${hot.length} hot lead${hot.length>1?'s':''}: ${hot.slice(0,2).map(c=>c.name).join(', ')}</li>`;
+  } else chinaEl.innerHTML = '<li>Add China contacts to see signals</li>';
+
+  if (usContacts.length) {
+    const types = {};
+    usContacts.forEach(c => types[c.type] = (types[c.type]||0)+1);
+    usaEl.innerHTML = Object.entries(types).map(([t,n]) =>
+      `<li>${n} ${t} contact${n>1?'s':''}</li>`).join('');
+    const hot = usContacts.filter(c=>c.warm==='hot');
+    if (hot.length) usaEl.innerHTML += `<li>${hot.length} hot lead${hot.length>1?'s':''}: ${hot.slice(0,2).map(c=>c.name).join(', ')}</li>`;
+  } else usaEl.innerHTML = '<li>Add USA contacts to see signals</li>';
+
+  // Idea themes
+  const themeEl = document.getElementById('insight-themes');
+  if (data.ideas.length) {
+    const cats = {};
+    data.ideas.forEach(i => cats[i.cat] = (cats[i.cat]||0)+1);
+    const top = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+    const topScore = [...data.ideas].sort((a,b)=>(b.market+b.exec)-(a.market+a.exec)).slice(0,2);
+    themeEl.innerHTML = top.map(([c,n])=>`<li>${n}x ${c}</li>`).join('');
+    themeEl.innerHTML += topScore.map(i=>`<li>★ ${i.title.slice(0,35)}${i.title.length>35?'…':''}</li>`).join('');
+  } else themeEl.innerHTML = '<li>Log ideas to surface themes</li>';
+
+  // Connections
+  const connEl = document.getElementById('insight-connect');
+  const open = data.actions.filter(a=>!a.done);
+  if (data.contacts.length && data.ideas.length) {
+    const hotContacts = data.contacts.filter(c=>c.warm==='hot').slice(0,3);
+    connEl.innerHTML = hotContacts.map(c=>`<li>Engage ${c.name} (${c.org})</li>`).join('');
+    if (open.length) connEl.innerHTML += `<li>${open.length} open action${open.length>1?'s':''} pending</li>`;
+  } else connEl.innerHTML = '<li>Add contacts + ideas to see gaps</li>';
+
+  // Matrix
+  ['hh','hl','lh','ll'].forEach(k => document.getElementById('mx-'+k).innerHTML = '');
+  data.ideas.forEach(idea => {
+    const hi_m = idea.market >= 4, hi_e = idea.exec >= 4;
+    const cellId = hi_m && hi_e ? 'mx-hh' : hi_m && !hi_e ? 'mx-hl' : !hi_m && hi_e ? 'mx-lh' : 'mx-ll';
+    const el = document.getElementById(cellId);
+    el.innerHTML += `<div class="matrix-idea">${idea.title.slice(0,32)}${idea.title.length>32?'…':''}</div>`;
+  });
+}
+
+function saveThesis() {
+  data.thesis = document.getElementById('thesis-text').value;
+  save();
+  const saved = document.getElementById('thesis-saved');
+  saved.textContent = 'saved ✓';
+  setTimeout(() => saved.textContent = '', 2000);
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────
+function updateDashStats() {
+  const open = data.actions.filter(a => !a.done).length;
+  document.getElementById('dash-contacts').textContent = data.contacts.length;
+  document.getElementById('dash-ideas').textContent = data.ideas.length;
+  document.getElementById('dash-actions').textContent = open;
+  document.getElementById('prog-contacts').style.width = Math.min(data.contacts.length * 6, 100) + '%';
+  document.getElementById('prog-ideas').style.width = Math.min(data.ideas.length * 10, 100) + '%';
+  document.getElementById('prog-actions').style.width = Math.min(open * 8, 100) + '%';
+  // Update nav notes count badge
+  const notesTab = document.getElementById('tab-notes');
+  if (notesTab && data.notes.length > 0) {
+    notesTab.innerHTML = `<span class="tab-icon">✎</span> Notes <span style="background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:2px">${data.notes.length}</span>`;
+  }
+}
+
+function renderDashboard() {
+  updateDashStats();
+
+  const now = new Date();
+  document.getElementById('dash-date').textContent =
+    now.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Network map
+  const nm = document.getElementById('dash-network-map');
+  const regionGroups = {};
+  data.contacts.forEach(c => {
+    const r = c.region || 'other';
+    if (!regionGroups[r]) regionGroups[r] = 0;
+    regionGroups[r]++;
+  });
+  const typeGroups = {};
+  data.contacts.forEach(c => {
+    if (!typeGroups[c.type]) typeGroups[c.type] = 0;
+    typeGroups[c.type]++;
+  });
+  if (!data.contacts.length) {
+    nm.innerHTML = '<span style="font-size:12px;color:var(--ink4);font-style:italic">No contacts yet</span>';
+  } else {
+    nm.innerHTML = Object.entries(typeGroups).map(([t,n]) =>
+      `<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px">
+        <span style="font-size:14px">${{vc:'💰',founder:'🚀',robotics:'🤖',conf:'🎤',advisor:'🧠',other:'◉'}[t]||'◉'}</span>
+        <span style="font-family:Syne,sans-serif;font-weight:600;font-size:12px">${n}</span>
+        <span style="font-size:11px;color:var(--ink3)">${t}</span>
+      </div>`).join('');
+  }
+
+  // Hot contacts
+  const hc = document.getElementById('dash-hot-contacts');
+  const hot = data.contacts.filter(c => c.warm === 'hot').slice(0, 4);
+  if (!hot.length) {
+    hc.innerHTML = '<div style="font-size:12px;color:var(--ink4);font-style:italic;padding:8px 0">No hot contacts yet</div>';
+  } else {
+    hc.innerHTML = hot.map(c => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="width:28px;height:28px;border-radius:6px;background:var(--china);color:#fff;font-family:Syne,sans-serif;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center">
+          ${c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+        </div>
+        <div>
+          <div style="font-family:Syne,sans-serif;font-weight:600;font-size:12px">${esc(c.name)}</div>
+          <div style="font-size:10px;color:var(--ink3)">${esc(c.org)} · ${c.region}</div>
+        </div>
+        <div style="margin-left:auto;font-family:Syne,sans-serif;font-weight:700;font-size:9px;color:#fff;background:var(--china);padding:2px 7px;border-radius:4px">HOT</div>
+      </div>`).join('');
+  }
+
+  // Activity feed
+  const af = document.getElementById('dash-activity');
+  const activities = [
+    ...data.contacts.map(c => ({ts:c.ts, text:`${c.by==='A'?'KT':c.by==='B'?'DZ':'JW'} added contact: ${c.name} (${c.org})`, color:MEMBER_COLORS[c.by]})),
+    ...data.ideas.map(i => ({ts:i.ts, text:`${i.by==='A'?'KT':i.by==='B'?'DZ':'JW'} logged idea: ${i.title}`, color:MEMBER_COLORS[i.by]})),
+    ...data.actions.map(a => ({ts:a.ts, text:`Action added: ${a.title} — Owner: ${a.owner}`, color:'var(--action)'})),
+    ...data.notes.map(n => ({ts:n.ts, text:`${n.by==='A'?'KT':n.by==='B'?'DZ':'JW'} added ${n.type} note: ${(n.title||n.body).slice(0,50)}`, color:MEMBER_COLORS[n.by]}))
+  ].sort((a,b) => new Date(b.ts) - new Date(a.ts)).slice(0, 8);
+
+  if (!activities.length) {
+    af.innerHTML = '<div class="empty" style="text-align:left;padding:16px 0">No activity yet — start by adding contacts</div>';
+  } else {
+    af.innerHTML = activities.map(a => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px">
+        <div style="width:6px;height:6px;border-radius:50%;background:${a.color};flex-shrink:0"></div>
+        <div style="font-size:11px;color:var(--ink2)">${esc(a.text)}</div>
+        <div style="font-size:10px;color:var(--ink4);margin-left:auto;white-space:nowrap">${relTime(a.ts)}</div>
+      </div>`).join('');
+  }
+}
+
+// ─── NOTES ───────────────────────────────────────────────────────
+let currentNType = 'general';
+let notesFilter = 'all';
+
+function selectNType(btn) {
+  document.querySelectorAll('.ntype-btn').forEach(b => {
+    b.className = 'ntype-btn';
+  });
+  btn.classList.add('sel-' + btn.dataset.ntype);
+  currentNType = btn.dataset.ntype;
+}
+
+function populateNoteLinkedDropdown() {
+  const cg = document.getElementById('n-linked-contacts');
+  const ig = document.getElementById('n-linked-ideas');
+  const ag = document.getElementById('n-linked-actions');
+  cg.innerHTML = data.contacts.map(c => `<option value="contact:${c.id}">${c.name} (${c.org})</option>`).join('');
+  ig.innerHTML = data.ideas.map(i => `<option value="idea:${i.id}">${i.title.slice(0,40)}</option>`).join('');
+  ag.innerHTML = data.actions.map(a => `<option value="action:${a.id}">${a.title.slice(0,40)}</option>`).join('');
+}
+
+function saveNote() {
+  const body = document.getElementById('n-body').value.trim();
+  if (!body) { document.getElementById('n-body').focus(); return; }
+  data.notes.push({
+    id: Date.now(),
+    title: document.getElementById('n-title').value.trim(),
+    body,
+    type: currentNType,
+    linked: document.getElementById('n-linked').value || null,
+    by: document.getElementById('n-by').value,
+    pinned: false,
+    comments: [],
+    ts: new Date().toISOString()
+  });
+  save();
+  document.getElementById('n-title').value = '';
+  document.getElementById('n-body').value = '';
+  document.getElementById('n-linked').value = '';
+  renderNotes();
+  updateDashStats();
+}
+
+function deleteNote(id) {
+  data.notes = data.notes.filter(n => n.id !== id);
+  save(); renderNotes(); updateDashStats();
+}
+
+function togglePinNote(id) {
+  const n = data.notes.find(x => x.id === id);
+  if (n) { n.pinned = !n.pinned; save(); renderNotes(); }
+}
+
+function filterNotes(f, el) {
+  notesFilter = f;
+  document.querySelectorAll('#page-notes .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderNotes();
+}
+
+function addComment(entityType, entityId, inputId) {
+  const el = document.getElementById(inputId);
+  const text = el.value.trim();
+  if (!text) return;
+  const comment = { id: Date.now(), text, by: currentMember, ts: new Date().toISOString() };
+  if (entityType === 'note') {
+    const n = data.notes.find(x => x.id === entityId);
+    if (n) { n.comments.push(comment); }
+  } else if (entityType === 'contact') {
+    const c = data.contacts.find(x => x.id === entityId);
+    if (c) { if (!c.comments) c.comments = []; c.comments.push(comment); }
+  } else if (entityType === 'idea') {
+    const i = data.ideas.find(x => x.id === entityId);
+    if (i) { if (!i.comments) i.comments = []; i.comments.push(comment); }
+  } else if (entityType === 'action') {
+    const a = data.actions.find(x => x.id === entityId);
+    if (a) { if (!a.comments) a.comments = []; a.comments.push(comment); }
+  }
+  el.value = '';
+  save();
+  if (entityType === 'note') renderNotes();
+  else if (entityType === 'contact') renderContacts();
+  else if (entityType === 'idea') renderIdeas();
+  else if (entityType === 'action') renderActions();
+}
+
+function toggleComments(id) {
+  const thread = document.getElementById('thread-' + id);
+  if (!thread) return;
+  thread.style.display = thread.style.display === 'none' ? 'flex' : 'none';
+}
+
+function buildCommentThread(entityType, entityId, comments) {
+  const inputId = `ci-${entityType}-${entityId}`;
+  const threadId = `thread-${entityType}-${entityId}`;
+  const count = comments ? comments.length : 0;
+  return `
+    <div class="comment-thread">
+      <button class="comment-thread-toggle" onclick="toggleComments('${entityType}-${entityId}')">
+        💬 ${count > 0 ? count + ' comment' + (count > 1 ? 's' : '') : 'Add comment'}
+      </button>
+      <div id="${threadId}" style="display:none;flex-direction:column;gap:6px">
+        ${(comments || []).map(c => `
+          <div class="comment-item">
+            <div class="comment-avatar" style="background:${MEMBER_COLORS[c.by]||'#888'}" style2="font-size:8px">${c.by==='A'?'KT':c.by==='B'?'DZ':'JW'}</div>
+            <div class="comment-content">
+              <div class="comment-meta">
+                <span class="comment-author" style="color:${MEMBER_COLORS[c.by]||'#888'}">${c.by==='A'?'KT':c.by==='B'?'DZ':'JW'}</span>
+                <span class="comment-time">${relTime(c.ts)}</span>
+              </div>
+              <div class="comment-text">${esc(c.text)}</div>
+            </div>
+          </div>`).join('')}
+        <div class="comment-input-row">
+          <textarea id="${inputId}" placeholder="Write a comment..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addComment('${entityType}',${entityId},'${inputId}')}"></textarea>
+          <button class="comment-send-btn" onclick="addComment('${entityType}',${entityId},'${inputId}')">↵</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderNotes() {
+  const q = (document.getElementById('notes-search')||{}).value?.toLowerCase() || '';
+  let items = [...data.notes];
+  if (notesFilter === 'pinned') items = items.filter(n => n.pinned);
+  else if (notesFilter !== 'all') items = items.filter(n => n.type === notesFilter);
+  if (q) items = items.filter(n =>
+    [n.title, n.body, n.by].join(' ').toLowerCase().includes(q));
+  items.sort((a,b) => b.pinned - a.pinned || new Date(b.ts) - new Date(a.ts));
+
+  const container = document.getElementById('notes-list');
+  if (!container) return;
+  if (!items.length) {
+    container.innerHTML = `<div class="empty" style="grid-column:1/-1">No notes yet — compose your first observation above</div>`;
+    return;
+  }
+
+  const typeColors = { general:'var(--border-dark)', insight:'var(--idea)', risk:'var(--china)', opportunity:'var(--gold)', question:'var(--usa)' };
+  const typeLabel = { general:'📝 General', insight:'💡 Insight', risk:'⚠ Risk', opportunity:'🌟 Opportunity', question:'❓ Question' };
+  const typeCls = { general:'ntype-general', insight:'ntype-insight', risk:'ntype-risk', opportunity:'ntype-opportunity', question:'ntype-question' };
+
+  function getLinkedLabel(linked) {
+    if (!linked) return '';
+    const [type, idStr] = linked.split(':');
+    const id = parseInt(idStr);
+    if (type === 'contact') { const c = data.contacts.find(x=>x.id===id); return c ? `↗ ${c.name}` : ''; }
+    if (type === 'idea') { const i = data.ideas.find(x=>x.id===id); return i ? `↗ ${i.title.slice(0,30)}` : ''; }
+    if (type === 'action') { const a = data.actions.find(x=>x.id===id); return a ? `↗ ${a.title.slice(0,30)}` : ''; }
+    return '';
+  }
+
+  container.innerHTML = items.map(n => `
+    <div class="note-card${n.pinned?' pinned':''}">
+      <div class="note-card-accent" style="background:${typeColors[n.type]}"></div>
+      <div class="note-header">
+        ${n.title ? `<div class="note-title-text">${esc(n.title)}</div>` : `<div class="note-title-text" style="color:var(--ink3);font-style:italic">Untitled Note</div>`}
+        <button onclick="togglePinNote(${n.id})" style="background:none;border:none;cursor:pointer;font-size:14px;color:${n.pinned?'var(--gold)':'var(--ink4)'};transition:color 0.15s" title="${n.pinned?'Unpin':'Pin'}">📌</button>
+      </div>
+      <div class="note-body">${esc(n.body)}</div>
+      <div class="note-footer">
+        <span class="note-type-badge ${typeCls[n.type]}">${typeLabel[n.type]}</span>
+        ${n.linked ? `<span class="note-linked" title="Linked item">${getLinkedLabel(n.linked)}</span>` : ''}
+        <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+          <div class="comment-avatar" style="background:${MEMBER_COLORS[n.by]||'#888'};width:18px;height:18px;font-size:7px">${n.by==='A'?'KT':n.by==='B'?'DZ':'JW'}</div>
+          <span style="font-size:10px;color:var(--ink4)">${relTime(n.ts)}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">delete</button>
+        </div>
+      </div>
+      ${buildCommentThread('note', n.id, n.comments)}
+    </div>`).join('');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function relTime(ts) {
+  const d = Date.now() - new Date(ts).getTime();
+  const m = Math.floor(d/60000);
+  if (m<1) return 'just now';
+  if (m<60) return m+'m ago';
+  const h = Math.floor(m/60);
+  if (h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+
+// ─── AI INGESTION ─────────────────────────────────────────────────
+let scanPendingContact = null;
+let scanPendingNote = null;
+
+function openScanModal(type) {
+  document.getElementById('modal-scan').classList.add('open');
+  document.getElementById('scan-type').value = type;
+  document.getElementById('scan-drop-label').textContent =
+    type === 'namecard' ? '📷 Drop a name card photo here, or click to browse' : '📄 Drop a text file / photo of notes here, or click to browse';
+  document.getElementById('scan-result-area').style.display = 'none';
+  document.getElementById('scan-preview').innerHTML = '';
+  document.getElementById('scan-status').textContent = '';
+  scanPendingContact = null;
+  scanPendingNote = null;
+}
+
+function closeScanModal() {
+  document.getElementById('modal-scan').classList.remove('open');
+}
+
+function handleScanFile(e) {
+  const file = e.target.files?.[0] || e.dataTransfer?.files?.[0];
+  if (!file) return;
+  e.preventDefault();
+  const type = document.getElementById('scan-type').value;
+  const preview = document.getElementById('scan-preview');
+  const status = document.getElementById('scan-status');
+
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      preview.innerHTML = `<img src="${ev.target.result}" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--border)">`;
+      status.textContent = 'Reading with AI...';
+      runAIScan(file, ev.target.result.split(',')[1], file.type, type);
+    };
+    reader.readAsDataURL(file);
+  } else if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      preview.innerHTML = `<pre style="font-size:11px;color:var(--ink3);max-height:120px;overflow:auto;padding:8px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)">${esc(ev.target.result.slice(0,800))}</pre>`;
+      status.textContent = 'Parsing with AI...';
+      runAIScanText(ev.target.result, type);
+    };
+    reader.readAsText(file);
+  } else {
+    status.textContent = '⚠ Unsupported file type. Please use JPG, PNG, or TXT.';
+  }
+}
+
+async function runAIScan(file, base64data, mimeType, scanType) {
+  const status = document.getElementById('scan-status');
+  try {
+    const prompt = scanType === 'namecard'
+      ? `You are parsing a business name card photo. Extract all visible information and return ONLY a JSON object with these exact keys (use empty string if not found): {"name":"","org":"","role":"","email":"","phone":"","region":"china or usa or both or unknown","type":"vc or founder or robotics or conf or advisor or other","notes":"any other info on the card"}. Return ONLY the JSON, no other text.`
+      : `You are reading handwritten or printed notes. Extract all key information and return ONLY a JSON object: {"title":"short summary title","body":"full extracted text cleaned up","type":"general or insight or risk or opportunity or question"}. Return ONLY the JSON, no other text.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64data } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+    const result = await response.json();
+    const text = result.content?.[0]?.text || '';
+    processAIResult(text, scanType);
+  } catch(err) {
+    status.textContent = '⚠ AI scan failed. Please fill in manually.';
+    console.error(err);
+  }
+}
+
+async function runAIScanText(textContent, scanType) {
+  const status = document.getElementById('scan-status');
+  try {
+    const prompt = scanType === 'namecard'
+      ? `Extract contact info from this text and return ONLY JSON: {"name":"","org":"","role":"","email":"","phone":"","region":"china or usa or both or unknown","type":"vc or founder or robotics or conf or advisor or other","notes":""}. Text: ${textContent.slice(0,2000)}`
+      : `Extract key info from these notes and return ONLY JSON: {"title":"short summary title","body":"full cleaned text","type":"general or insight or risk or opportunity or question"}. Notes: ${textContent.slice(0,3000)}`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const result = await response.json();
+    const text = result.content?.[0]?.text || '';
+    processAIResult(text, scanType);
+  } catch(err) {
+    status.textContent = '⚠ AI parse failed. Please fill in manually.';
+  }
+}
+
+function processAIResult(text, scanType) {
+  const status = document.getElementById('scan-status');
+  const resultArea = document.getElementById('scan-result-area');
+  try {
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    if (scanType === 'namecard') {
+      scanPendingContact = parsed;
+      document.getElementById('sr-name').value = parsed.name || '';
+      document.getElementById('sr-org').value = parsed.org || '';
+      document.getElementById('sr-role').value = parsed.role || '';
+      document.getElementById('sr-email').value = parsed.email || (parsed.phone ? parsed.phone : '');
+      document.getElementById('sr-region').value = ['china','usa','both'].includes(parsed.region) ? parsed.region : 'both';
+      document.getElementById('sr-type').value = ['vc','founder','robotics','conf','advisor','other'].includes(parsed.type) ? parsed.type : 'other';
+      document.getElementById('sr-notes').value = parsed.notes || '';
+      document.getElementById('scan-result-namecard').style.display = 'block';
+      document.getElementById('scan-result-note').style.display = 'none';
+    } else {
+      scanPendingNote = parsed;
+      document.getElementById('sn-title').value = parsed.title || '';
+      document.getElementById('sn-body').value = parsed.body || '';
+      document.getElementById('sn-type').value = ['general','insight','risk','opportunity','question'].includes(parsed.type) ? parsed.type : 'general';
+      document.getElementById('scan-result-namecard').style.display = 'none';
+      document.getElementById('scan-result-note').style.display = 'block';
+    }
+
+    status.textContent = '✓ AI extracted the data below — review and confirm.';
+    status.style.color = 'var(--idea)';
+    resultArea.style.display = 'block';
+  } catch(e) {
+    status.textContent = '⚠ Could not parse AI response. Try a clearer image.';
+    status.style.color = 'var(--china)';
+  }
+}
+
+function confirmScanContact() {
+  const contact = {
+    id: Date.now(),
+    name: document.getElementById('sr-name').value.trim(),
+    org: document.getElementById('sr-org').value.trim(),
+    role: document.getElementById('sr-role').value.trim(),
+    email: document.getElementById('sr-email').value.trim(),
+    region: document.getElementById('sr-region').value,
+    type: document.getElementById('sr-type').value,
+    warm: 'cold',
+    by: currentMember,
+    notes: document.getElementById('sr-notes').value.trim(),
+    comments: [],
+    ts: new Date().toISOString()
+  };
+  if (!contact.name) { alert('Name is required'); return; }
+  data.contacts.push(contact);
+  save();
+  closeScanModal();
+  showPage('contacts');
+  renderContacts();
+  updateDashStats();
+}
+
+function confirmScanNote() {
+  const note = {
+    id: Date.now(),
+    title: document.getElementById('sn-title').value.trim(),
+    body: document.getElementById('sn-body').value.trim(),
+    type: document.getElementById('sn-type').value,
+    linked: null,
+    by: currentMember,
+    pinned: false,
+    comments: [],
+    ts: new Date().toISOString()
+  };
+  if (!note.body) { alert('Note body is required'); return; }
+  data.notes.push(note);
+  save();
+  closeScanModal();
+  showPage('notes');
+  renderNotes();
+  updateDashStats();
+}
+
+// drag-drop helpers
+function scanDragOver(e) { e.preventDefault(); document.getElementById('scan-drop').classList.add('drag-over'); }
+function scanDragLeave() { document.getElementById('scan-drop').classList.remove('drag-over'); }
+function scanDrop(e) { e.preventDefault(); scanDragLeave(); handleScanFile(e); }
+
+// ─── INIT ─────────────────────────────────────────────────────────
+(function initData() {
+  try {
+    const saved = localStorage.getItem('vf-data-v1');
+    let d = { contacts:[], ideas:[], actions:[], notes:[], thesis:'' };
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const seedCIds = new Set([1,2,3,4,5]);
+      const seedIIds = new Set([10,11,12]);
+      const seedAIds = new Set([100,101,102]);
+      const seedNIds = new Set([200,201,202,203]);
+      d.contacts = (parsed.contacts||[]).filter(c => !seedCIds.has(c.id));
+      d.ideas    = (parsed.ideas||[]).filter(i => !seedIIds.has(i.id));
+      d.actions  = (parsed.actions||[]).filter(a => !seedAIds.has(a.id));
+      d.notes    = (parsed.notes||[]).filter(n => !seedNIds.has(n.id));
+      d.thesis   = parsed.thesis || '';
+    }
+
+    // Always ensure MoM canonical items exist — merge by ID (restore if deleted)
+    function ensure(arr, item) {
+      if (!arr.find(x => x.id === item.id)) arr.push(item);
+    }
+
+    // ── CONTACT ──────────────────────────────────────────────────
+    ensure(d.contacts, {
+      id: 500, name: 'Harley Finkelstein', org: 'Shopify', role: 'President',
+      region: 'usa', type: 'founder', warm: 'warm', email: '', by: 'A',
+      notes: 'President of Shopify. Keynote at tech conference Feb 2026. Lead storyteller — Toby Lütke owns product. Advisor: Felicis Ventures, OMERS. Dragon on Dragons Den. Believer in agentic commerce as next major channel.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── IDEAS ─────────────────────────────────────────────────────
+    ensure(d.ideas, {
+      id: 501, title: 'Agentic Commerce Layer for SE Asia Merchants',
+      desc: 'Shopify is building UCP (Universal Commerce Protocol with Google) to let merchants communicate structured data to AI agents. Opportunity: build the regional GTM / onboarding layer for SE Asian merchants onto UCP-compatible agentic channels. Act as the "Shopify for agents" aggregator in markets Shopify underserves.',
+      origin: 'usa', cat: 'platform', market: 5, exec: 3,
+      source: 'Harley Finkelstein / Shopify MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [{ id: 5001, text: 'UCP is open-source. First mover to build tooling on top of it in Asia could be a real wedge. Worth validating whether Shopify has a dedicated SE Asia BD team.', by: 'A', ts: '2026-02-26T01:00:00.000Z' }],
+      ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 502, title: 'Merit-Based AI Discovery Platform for Long-Tail Brands',
+      desc: 'Agentic commerce is "fundamentally merit-based" — agents surface best products, not biggest ad spenders. 14% of US retail is e-commerce; 86% still offline. An AI agent commerce aggregator targeting China-manufactured long-tail brands (high quality, zero SEA distribution) could tap the discovery gap Google Ads and Meta cannot fill.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 3,
+      source: 'Harley Finkelstein / Shopify MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 503, title: 'Shopify Capital-Equivalent for Chinese Cross-Border Merchants',
+      desc: 'Shopify Capital deployed $4.2B using proprietary transaction data for instant underwriting. Chinese cross-border sellers (Shoplazza, Youzan AllValue) have NO equivalent. Opportunity: data-driven merchant lending for Chinese DTC brands expanding into SE Asia, using e-commerce data as underwriting signal.',
+      origin: 'china', cat: 'vertical', market: 4, exec: 3,
+      source: 'Shopify Capital model from MoM + China counterparts analysis', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── NOTES ─────────────────────────────────────────────────────
+    ensure(d.notes, {
+      id: 504, title: 'Shopify MoM — Agentic Commerce: Core Thesis',
+      body: `Source: Harley Finkelstein, Shopify President. Conference interview, 26 Feb 2026.
+
+CORE ARGUMENT: Agentic commerce is the 3rd era of retail:
+1. 1990s — E-commerce (moved retail online)
+2. ~2010 — Omnichannel (integrated online/offline/social)
+3. Now — Agentic (AI agents as the new "front door" to commerce)
+
+KEY INSIGHT: Agents are merit-based. Unlike Google/Meta paid search, an AI agent surfaces the RIGHT product for a user based on context — not the biggest advertiser. Levels the playing field for long-tail brands.
+
+SHOPIFY'S RESPONSE: Universal Commerce Protocol (UCP) — open-source, co-built with Google, announced NRF Jan 2026. Lets merchants feed structured product/loyalty/discount data directly to AI agents.
+
+HUB-AND-SPOKE: Every new channel (social, B2B, agentic) adds value to Shopify's core OS. Agentic = newest spoke, not a threat.
+
+PRIVACY ANGLE: Shop Pay as a data vault. Trust = competitive moat in agentic world.
+
+FINKELSTEIN PERSONAL USE: Uses "OpenClaw" AI agent via Telegram. Techno-optimist stance.`,
+      type: 'insight', linked: 'contact:500', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 505, title: 'China Counterparts — E-Commerce SaaS Landscape',
+      body: `MoM Section 4: China counterparts to Shopify.
+
+SHOPLINE — HQ: HK/Singapore. Founded 2013. Investors: Gobi, Alibaba EF. Focus: global SaaS, social commerce.
+
+YOUZAN (有赞) + ALLVALUE — HQ: Hangzhou. Founded 2012. HKEX listed. 500K+ merchants. 20.6B CNY transaction vol. AllValue: 30K+ cross-border merchants. Founder: Bai Ya (Zhu Ning) — ex-Baidu, ex-Alipay.
+
+SHOPLAZZA (店匠科技) — HQ: Shenzhen. Founded 2017. SoftBank Vision Fund + Sky Capital ($60M Series C). Founder: Jeff Li — ex-Baidu, NUS EMBA. Cross-border DTC focus.
+
+BAOZUN (宝尊电商) — HQ: Shanghai. Founded 2007. NASDAQ: BZUN. Revenue $1.4B. 400+ brand clients. End-to-end e-commerce services for foreign brands entering China.
+
+WEIMOB (微盟集团) — HQ: Shanghai. Founded 2013. HKEX: 2013.HK. Revenue ~$0.5B. Investors: Tencent, JPMorgan. WeChat Mini Program Mall, 80% share in top convenience chains.
+
+KEY GAP vs SHOPIFY: None have a Shopify Capital equivalent. All WeChat-ecosystem dependent. None have UCP-equivalent for agentic commerce.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 506, title: 'Risk: E-commerce SaaS centralising around few OS platforms',
+      body: `Infrastructure concentrating around Shopify (West) and Youzan/Weimob (China).
+
+RISK — PLATFORM DEPENDENCY: Building on any single platform inherits their strategic risk.
+
+RISK — CHINA/US REGULATORY: Cross-border data flows and dual-use tech are tightening. Any model moving merchant data or payments between China and SE Asia/US needs clear regulatory architecture from day one.
+
+RISK — UCP ADOPTION SPEED: UCP announced but not widely adopted. Building too early on unproven protocol is a timing bet.
+
+MITIGATION: Build protocol-agnostic. Be the merchant-facing layer, not the infra layer. Let platforms fight for infra dominance while we own merchant relationships.`,
+      type: 'risk', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 507, title: 'Opportunity: Long-tail brand discovery is the white space',
+      body: `Finkelstein: 14% of US retail is e-commerce. 86% still offline. Agentic commerce could convert offline-only shoppers by removing search friction.
+
+FOR US: SE Asia equivalent may be even larger — e-commerce penetration lower, mobile-first consumers adopting AI assistants faster, no dominant local Shopify equivalent.
+
+LONG-TAIL ANGLE: Millions of Chinese manufacturers have excellent products but zero discovery outside Alibaba/Amazon. An AI-agent-native discovery layer — "the agent that knows every Chinese factory brand" — could be a unique wedge.
+
+QUESTION TO VALIDATE: Are there AI shopping agents in SE Asia already? Who is building the context-aware personal shopper for Vietnamese/Indonesian/Thai consumers? This is the gap to check.`,
+      type: 'opportunity', linked: 'idea:502', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 508, title: 'Shopify Leadership Model — Lesson for our team',
+      body: `Finkelstein's "bespoke leadership": assign roles based on individual superpowers, not standard titles.
+- Toby Lütke = product (exclusively)
+- Harley Finkelstein = storytelling/narrative (exclusively)
+- Both re-qualify for roles annually
+
+TAKEAWAY FOR OUR TEAM: Be explicit about who owns what:
+- Who is our product/idea person?
+- Who is our external storyteller / networker?
+- Who is our operator / execution person?
+
+VCs will want to see a team where roles are crystal clear and play to individual strengths.`,
+      type: 'general', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── ACTIONS ──────────────────────────────────────────────────
+    ensure(d.actions, {
+      id: 509, title: 'Research UCP adoption — who is building on it in Asia?',
+      desc: 'Universal Commerce Protocol announced Jan 2026 (Shopify + Google). Find: any Asian tech players building on UCP? Any SE Asian commerce platforms talking to AI agents yet? This defines whether our window is open or closing.',
+      owner: 'A', due: 'urgent', cat: 'research', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 510, title: 'Map AI shopping agent landscape in SE Asia',
+      desc: 'Validate the long-tail discovery opportunity: who is building AI personal shopping agents for Vietnamese/Indonesian/Thai consumers? Scan: ChatGPT commerce, Perplexity shopping, Line, Grab, and local players.',
+      owner: 'B', due: 'soon', cat: 'research', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── MoM 2: AI Adoption & Infrastructure Panel — 26 Feb 2026 ──
+
+    // CONTACTS
+    ensure(d.contacts, {
+      id: 601, name: 'Miles Clements', org: 'Accel', role: 'Partner (Late-Stage Growth)',
+      region: 'usa', type: 'vc', warm: 'warm', email: '', by: 'A',
+      notes: 'Partner at Accel ~18 years. Leads late-stage growth fund. Portfolio: Atlassian, Linear, Remote. MBA Harvard 2013. Bay Area. Key framework: "time-to-value vs durability-of-value" for AI PMF. Uses Atlassian as incumbent AI transition case study.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 602, name: 'Eve Bodnia', org: 'Logical Intelligence', role: 'Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'warm', email: '', by: 'A',
+      notes: 'Born Kazakhstan. PhD quantum information & algebraic topology, UC Santa Barbara. Founded Logical Intelligence while 8 months pregnant. Builds energy-based reasoning models (EBMs) as LLM alternative. Ally of Yann LeCun / JEPA work. Targets mission-critical industries: chip design, surgery, autonomous vehicles, aviation.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 603, name: 'Richard Kerris', org: 'NVIDIA', role: 'VP & GM, Media & Entertainment',
+      region: 'usa', type: 'other', warm: 'cold', email: '', by: 'A',
+      notes: 'VP/GM Media & Entertainment at NVIDIA. Career: Apple, Lucasfilm, Amazon/AWS. Speaks at SIGGRAPH, VIEW Conference. Key thesis: AI must be holistic infrastructure transformation, not bolt-on feature. NVIDIA: ~$3T market cap, $130B+ FY2025 revenue, Blackwell architecture in production.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 604, name: 'Archie McKenzie', org: 'General Translation', role: 'Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'warm', email: '', by: 'A',
+      notes: 'Princeton CS 2024. TA for Brian Kernighan 2021-2024. Founded General Translation immediately post-graduation. Builds AI-powered i18n stack for React apps — translates entire components, not strings. Uses Anthropic models + AST linting loop. Customers: Cursor, Cognition, ClickHouse. ~$5M seed raised.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 605, name: 'Aditi Maliwal', org: 'Upfront Ventures', role: 'General Partner',
+      region: 'usa', type: 'vc', warm: 'cold', email: '', by: 'A',
+      notes: 'GP at Upfront Ventures (LA). Stanford BA Psychology/Economics. Ex-Google Corporate Development & IR. Portfolio: Clair, Arcade, Writer.ai, Stem, Daytona. Moderated AI Adoption panel at Upfront Summit Feb 2026.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 611, title: 'AI Infrastructure Transformation Consultancy for Asian Enterprises',
+      desc: 'Richard Kerris (NVIDIA): biggest enterprise mistake is treating AI as bolt-on feature vs rebuilding core operations around AI intelligence. Asian enterprises (manufacturing, logistics, finance) are even further behind on this shift than Western ones. Opportunity: a focused advisory + implementation firm that helps mid-size Asian companies restructure their data/compute architecture around AI — not just add ChatGPT on top.',
+      origin: 'both', cat: 'b2b', market: 4, exec: 4,
+      source: 'Richard Kerris / AI Adoption panel MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 612, title: 'Deterministic AI Layer for Chinese Industrial / Mission-Critical Applications',
+      desc: 'Eve Bodnia (Logical Intelligence): LLMs cannot be 100% reliable — hallucinations make them unusable for chip design, surgery, autonomous systems. EBMs (energy-based models) solve this with formal verification. China has massive industrial AI demand (chip design, manufacturing QC, agronomics) but no credible EBM player. Opportunity: commercialize or partner on deterministic AI specifically for Chinese industrial use cases where LLM errors are unacceptable.',
+      origin: 'china', cat: 'vertical', market: 4, exec: 2,
+      source: 'Eve Bodnia / Logical Intelligence — AI Adoption panel MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [{
+        id: 6001, text: 'Logical Intelligence is the most technically differentiated company in this MoM. Worth a direct outreach to Eve — she is building exactly the type of non-LLM architecture that Chinese industrial clients need.',
+        by: 'A', ts: '2026-02-26T01:00:00.000Z'
+      }],
+      ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 613, title: 'AI Developer Tooling for Chinese Software Teams Going Global',
+      desc: 'Archie McKenzie (General Translation): AI code generation is the fastest-moving category. General Translation solves i18n for React apps using Anthropic + AST linting — no manual engineering needed to launch in any language. Chinese software companies expanding globally have massive i18n pain. Opportunity: build or white-label an i18n-as-a-service for Chinese dev teams, using a similar LLM + programmatic verification architecture.',
+      origin: 'china', cat: 'data', market: 3, exec: 4,
+      source: 'Archie McKenzie / General Translation — AI Adoption panel MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // NOTES
+    ensure(d.notes, {
+      id: 621, title: 'Panel MoM — AI Adoption: Core Debate & Key Frameworks',
+      body: `Source: Upfront Summit panel, 26 Feb 2026. Panelists: Miles Clements (Accel), Eve Bodnia (Logical Intelligence), Richard Kerris (NVIDIA), Archie McKenzie (General Translation). Moderator: Aditi Maliwal (Upfront Ventures).
+
+CENTRAL DEBATE: Is this a genuine AI revolution or an "LLM bubble"?
+- Eve Bodnia: LLM bubble. LLMs are pattern-matching on internet garbage. Real intelligence is not linguistic. Humans operate on <20W, reason in latent space, navigate physical world without language. LLMs cannot.
+- Kerris/Clements: Real transformation — but requires deep infrastructure rebuild, not bolt-on.
+
+KEY FRAMEWORKS:
+1. KERRIS — Holistic vs Additive AI: Don't bolt AI onto existing infra. Rebuild core operations with AI as the nucleus. Companies using external ChatGPT for internal tasks are missing the point entirely.
+
+2. CLEMENTS — Time-to-Value vs Durability-of-Value: 
+   - High TTD + Low DV = vibe coding (fast but shallow)
+   - Low TTD + High DV = Harvey/legal AI (slow to adopt, transformative once in)
+   - HIGH TTD + HIGH DV = Cursor (best case — immediate productivity + compounds org-wide)
+
+3. BODNIA — Specialized Model Ecosystem: Future is not one big brain. It's composable specialized models (language model, reasoning model, domain model) that are interoperable. Logical Intelligence is building the reasoning layer.
+
+4. MCKENZIE — AI code generation: Unprecedented in history — so many well-funded teams (Cursor, Cognition, OpenAI, Anthropic) competing directly. Net positive for developers. Key insight: LLM + programmatic verification (AST linting) = production-ready code.`,
+      type: 'insight', linked: null, by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 622, title: 'Eve Bodnia / Logical Intelligence — EBM Architecture Deep Dive',
+      body: `Energy-Based Reasoning Models (EBMs) — key technical facts from MoM:
+
+HOW IT WORKS: Instead of predicting next token, EBM minimizes an energy function over possible outcomes. Operates in latent space (not language). Inspired by how the human brain maintains goal-oriented representations.
+
+KEY ADVANTAGE: Formal verification — outputs can be mathematically verified. LLMs fundamentally cannot do this (probabilistic by nature).
+
+COST: Sudoku demo cost ~$4 to run vs ~$20,000 for equivalent LLM. ~5000x cheaper.
+TRACTION: Sudoku demo got 20,000 users in week one.
+
+TARGET MARKETS: Chip design, surgery, autonomous vehicles, aviation, agronomics. Anywhere hallucinations = unacceptable.
+
+INTELLECTUAL CONTEXT: Ally of Yann LeCun's JEPA (Joint Embedding Predictive Architecture) work. Positioned as the applied commercialization of non-LLM AI research.
+
+CHINA ANGLE: China's semiconductor push (chip design AI) and industrial automation ambitions make this architecture highly relevant to Chinese enterprise customers. No credible Chinese EBM player exists yet.`,
+      type: 'insight', linked: 'contact:602', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 623, title: 'China AI Counterparts — Developer Tools & Alternative Architectures',
+      body: `From MoM Section 4: China counterparts to panelist companies.
+
+CATEGORY 1: AI Software Localization (vs General Translation)
+
+GTCOM / 译世界 — Beijing. State-owned (China Translation Corp / China Int'l Publishing Group). JoveStar big data platform. Machine translation APIs, cross-lingual search. Clients: finance, government, media, legal. State-backed funding. NOTE: Not suitable as direct partner due to SOE background, but tech stack (MT APIs, cross-lingual analytics) is relevant infrastructure.
+
+Caiyun Technology (彩云科技) — Beijing. Caiyun Xiaoyi product: real-time bilingual translation, simultaneous interpretation CN/JP/EN. Integrated with DeepSeek, GLM. 100K+ industry-specific terms DB. Freemium SaaS. NOTE: Consumer/prosumer tool, not developer infra. No direct i18n equivalent to General Translation.
+
+CATEGORY 2: Alternative AI Architectures (vs Logical Intelligence)
+
+Zhipu AI (智谱AI) — Beijing. Tsinghua spinout 2019. CEO: Zhang Peng. ~2.5B RMB raised. Pre-IPO HK listing. Products: GLM-4, ChatGLM (open-source), CogVideo, CogView, AI agent platform. NOTE: Primarily LLM, but researching world models / non-LLM architectures. Open-source GLM already used by US AI startups — natural bridge for cross-border.
+
+Verdant AI (词元无限) — Beijing. ~2025 founded. Founder: Chen Zhijie (ex-ByteDance algorithm lead) + Tsinghua Yao Class team. Enterprise AI coding agent. 40% R&D efficiency improvement, 88%+ usable code rate in POCs. Funded: Tencent + Sequoia China. NOTE: Chinese equivalent of Cursor/Cognition. Most comparable to AI coding tools in the panel.
+
+KEY OBSERVATION: No Chinese company is building EBM-equivalent architecture. The deterministic AI space in China is wide open.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 624, title: 'Clements Framework: Incumbent vs AI-Native — Atlassian Case Study',
+      body: `Miles Clements (Accel) on how incumbents navigate the AI transition — Atlassian as primary case study.
+
+STRUCTURAL ADVANTAGE: Best software distribution model in enterprise history. Product-led growth pioneer. Any new AI product reaches customers faster than any startup.
+
+STRUCTURAL DISADVANTAGE: Horizontal product = must fight AI-native startups on every persona (developer, IT help desk, project manager). Each persona is its own "AI battlefield."
+
+CONCLUSION: Incumbents' success = quality of leadership + ability to innovate. Clements is confident in Atlassian's specific leadership.
+
+RELEVANCE FOR US: When evaluating any AI business idea, ask:
+1. Is there an incumbent with PLG distribution who will simply add this as a feature?
+2. Which persona/vertical is defensible from incumbent encroachment?
+3. What is the time-to-value AND durability-of-value of our product?
+
+Best-case target: Cursor-like — high TTD + high DV. Avoid: vibe coding-like — high TTD but shallow stickiness.`,
+      type: 'insight', linked: 'contact:601', by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 631, title: 'Reach out to Eve Bodnia / Logical Intelligence',
+      desc: 'EBM architecture is exactly what Chinese industrial AI clients need. No Chinese equivalent exists. Explore: (1) partnership / licensing for Chinese market, (2) introductions to Chinese chip design or manufacturing companies who need deterministic AI.',
+      owner: 'A', due: 'soon', cat: 'contact', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 632, title: 'Research Verdant AI (词元无限) — monitor for partnership angle',
+      desc: 'Chinese Cursor equivalent. Founded ~2025, Tencent + Sequoia China backed, Tsinghua Yao Class team. Track their progress — if they expand internationally, there may be a cross-border GTM partnership opportunity for our team.',
+      owner: 'B', due: 'normal', cat: 'research', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 633, title: 'Apply Clements TTD/DV framework to our top 3 ideas',
+      desc: 'Score each of our current ideas on (1) Time-to-Value: how fast does a user get benefit? and (2) Durability-of-Value: how sticky/compounding is it over time? Prioritize ideas that score high on both — like Cursor. Deprioritize anything that is fast-but-shallow.',
+      owner: 'team', due: 'urgent', cat: 'decision', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── MoM 3: AI Applications & Societal Shifts Panel — 26 Feb 2026 ──
+
+    // CONTACTS
+    ensure(d.contacts, {
+      id: 701, name: 'Matthew Gallagher', org: 'Medvive', role: 'Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'hot', email: '', by: 'A',
+      notes: 'Solo founder. Built Medvive to $1B+ annualized revenue with 1 employee in 1.5 years. 300,000 active patients. $300-$400 revenue per patient. Software engineering background. Uses AI for everything: dev, patient support, data analysis. The single most extreme example of AI leverage we have encountered.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 702, name: 'Ross', org: 'Life Kit', role: 'Founder',
+      region: 'usa', type: 'founder', warm: 'warm', email: '', by: 'A',
+      notes: 'Founder of Life Kit — LLM-powered voice AI platform. Expert in voice AI technical stack: stateful, low-latency streaming architecture fundamentally different from HTTP web apps. Key insight: latency is make-or-break for voice AI, not just an optimization. Full name not captured in MoM.',
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 711, title: '🎯 AI Telehealth — Indonesia: Chronic Disease B2B Layer',
+      desc: 'PRIORITY FOCUS — Indonesia market entry via B2B, not consumer.\n\nWHY INDONESIA: 280M population. Only 2.1 doctors per 10,000 people (WHO recommends 1:600). 98% enrolled in JKN national insurance — reimbursement infrastructure exists. Telehealth market $1.1B (2026) → $5-8B (2030) at 14-18% CAGR. Government SATUSEHAT mandate connecting 98.6% of healthcare providers to unified EHR — compliance unlocks JKN reimbursement.\n\nWHY NOT CONSUMER: Halodoc ($258M raised) and Alodokter (40M monthly users, 45K doctors) own the consumer teleconsultation layer. This battle is over.\n\nTHE WEDGE — CHRONIC DISEASE MANAGEMENT B2B: Indonesia has one of Asia's highest rates of diabetes (~19M patients) and cardiovascular disease. These require ongoing monitoring, not one-off consultations. Halodoc/Alodokter are not specialized for chronic care management. Opportunity: AI-powered chronic disease management platform sold B2B to hospital groups and JKN — automated patient monitoring, medication adherence, triage escalation. Revenue model: SaaS per enrolled patient to hospital/insurer, not direct-to-consumer.\n\nMEDVIVE MODEL APPLICATION: Medvive = $1B ARR, 1 person. Apply same AI-first ops to Indonesia chronic care — AI handles patient comms, monitoring alerts, prescription refills, data analysis. Human doctors only handle escalations.\n\nGTM: Partner with one of Indonesia's large hospital chains (Siloam, Hermina, Mitra Keluarga) or with BPJS Kesehatan directly. B2B sales — avoid consumer CAC entirely.\n\nKEY RISK: SATUSEHAT integration required. Data localisation law. Local partner essential — regulatory and cultural.',
+      origin: 'usa', cat: 'b2b', market: 5, exec: 4,
+      source: 'Matthew Gallagher / Medvive MoM + Indonesia market research Mar 2026', by: 'A', votes: [],
+      comments: [{
+        id: 7001, text: 'Upgraded from generic SE Asia telehealth to specific Indonesia B2B chronic disease thesis. Consumer layer is taken by Halodoc/Alodokter. The gap is chronic care management sold to hospital groups and JKN — this is where Medvive model applies.',
+        by: 'A', ts: '2026-03-06T00:00:00.000Z'
+      }],
+      ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 714, title: '🎯 AI Telehealth — Japan: Hospital Back-Office Automation',
+      desc: 'PRIORITY FOCUS — Japan market entry via clinic/hospital efficiency, not patient-facing telehealth.\n\nWHY JAPAN: 125M population, 29% aged 65+ (→ 35% by 2040). Healthcare system collapsing under manual workload — documentation, triage, scheduling, administrative workflows. Government investing ~$100B in AI hospital infrastructure over 5 years. Telehealth market $1.9B (2025) → $6B (2035). PMDA IDATEN system now allows AI software updates without re-approval — regulatory path clarified.\n\nWHY NOT TELECONSULTATION: Ubie AI Symptom Checker (12M monthly users, 1,700 institutions, Google-backed) already owns the front-end patient layer. Entry requires a different wedge.\n\nTHE WEDGE — BACK-OFFICE AI AUTOMATION: Japan\'s healthcare pain is not patient access — it is the crushing administrative burden on doctors and nurses. Average Japanese doctor spends 30-40% of time on documentation, not care. Opportunity: AI-powered clinical documentation, automated triage sorting, and scheduling optimisation — sold as SaaS to hospital groups and regional clinic networks. NLP for Japanese medical records is a specific technical moat (Japanese medical language is specialised and poorly served by general LLMs).\n\nMEDVIVE MODEL APPLICATION: Not solo-operator healthcare delivery, but solo-operator clinic efficiency — one AI product serving hundreds of clinics, minimal headcount, high recurring revenue per institution.\n\nGTM: Partnership entry. Identify one regional hospital group willing to co-develop and pilot. Japan requires deep localisation — no cold entry. Target: pharmaceutical company (Shionogi, Daiichi Sankyo already active in digital health) or a regional hospital network outside Tokyo.\n\nKEY RISK: Japan is slow. Sales cycles are long. Deep localisation required (language, culture, regulatory). Strong local partner is non-negotiable. 18-24 months to first meaningful revenue.\n\nKEY ADVANTAGE OVER INDONESIA: Once in, very sticky. Japanese hospital relationships are long-term. Competitive moat from Japanese medical NLP data is high.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 3,
+      source: 'Japan digital health research Mar 2026 + Medvive Medvive model cross-reference', by: 'A', votes: [],
+      comments: [{
+        id: 7002, text: 'Japan is slower to enter but more defensible. The back-office automation wedge is underserved — Ubie owns triage/symptom but nobody owns clinical documentation automation at scale in Japanese. This is where our AI + local partner model applies.',
+        by: 'A', ts: '2026-03-06T00:00:00.000Z'
+      }],
+      ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 715, title: '🎯 AI Telehealth — Dual Market: Indonesia fast, Japan slow',
+      desc: 'STRATEGIC FRAMING: Indonesia and Japan are not competing bets — they are sequenced.\n\nPHASE 1 (0-18 months) — INDONESIA: Validate the B2B chronic disease management model. Lower barriers, faster revenue signal, clearer product-market fit test. Success metric: signed pilot with one Indonesian hospital group or BPJS within 12 months.\n\nPHASE 2 (12-36 months) — JAPAN: Use Indonesia traction + AI-first healthcare ops playbook to enter Japan via a local partner. Apply lessons on chronic disease data, patient behaviour, AI monitoring workflows to the Japanese back-office automation wedge.\n\nWHY THIS SEQUENCING WORKS:\n- Indonesia validates the core AI-first healthcare ops model cheaply and quickly\n- Japan requires proof of concept + local partner — Indonesia gives you both a proof and time to find the partner\n- Revenue from Indonesia can fund the longer Japan sales cycle\n- The underlying technology stack (chronic disease monitoring, AI patient comms, clinical data pipelines) is transferable across both markets\n\nEFFICIENCY TARGET: Both markets should be run with <5 people core team. Indonesia ops: 1-2 people. Japan: 1 business development + local partner. Product + AI: shared.\n\nCOMPETITIVE POSITION: No single competitor currently operates this dual-market Indonesia+Japan AI telehealth model. Halodoc is Indonesia-only. Ubie is Japan-only. Nobody is building the cross-market Asian AI healthcare infrastructure play.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 4,
+      source: 'Synthesis across Indonesia + Japan market research, Mar 2026', by: 'A', votes: [],
+      comments: [],
+      ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 712, title: 'AI-Native Call Center Replacement for Asian Financial Institutions',
+      desc: 'Unnamed enterprise AI speaker: clients already replacing 500-1,000 person call centers with AI automation within one year. Asian banks and insurance companies run some of the largest call centers in the world. Opportunity: build or deploy an AI call center replacement product specifically for ASEAN financial institutions — voice AI + LLM + compliance layer. Use Mobvoi or AISpeech (China) as technical partner for voice stack.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 3,
+      source: 'Unnamed Enterprise Speaker + Mobvoi/AISpeech China counterparts — MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 713, title: 'GTM-as-a-Service for AI-First Founders in Asia',
+      desc: 'Panel consensus: in a world where AI functionality is replicable within a week, GTM and "taste" are the only durable differentiators. Most Asian AI founders are strong technically but weak on GTM. Opportunity: a boutique GTM studio that helps AI-first Asian startups with distribution, narrative, and go-to-market — charged as % of revenue or equity. Leverage our cross-border network as the core asset.',
+      origin: 'both', cat: 'b2b', market: 3, exec: 4,
+      source: 'Ross / Life Kit + panel consensus — AI Applications panel MoM 26 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // TELEHEALTH PRIORITY NOTES & ACTIONS (added Mar 2026)
+    ensure(d.notes, {
+      id: 7160, title: '📌 PRIORITY THESIS: AI Telehealth — Indonesia + Japan',
+      body: `STATUS: Team priority focus as of March 2026.
+
+TWO-MARKET THESIS:
+Indonesia = fast validation, B2B chronic disease management
+Japan = slow but defensible, hospital back-office automation
+
+━━━ INDONESIA ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MARKET: 280M population. 2.1 doctors/10K (WHO recommends 10/10K). JKN covers 98% of population. SATUSEHAT connects 98.6% of providers. Telehealth $1.1B → $5-8B by 2030.
+
+THE TRAP TO AVOID: Consumer teleconsultation. Halodoc ($258M raised, 20M+ users) and Alodokter (40M monthly users, 45K doctors) own this. Do not compete head-on.
+
+THE WEDGE: Chronic disease management B2B.
+- Indonesia has ~19M diabetic patients, some of Asia's highest CVD rates
+- Chronic care requires ongoing monitoring — not one-off consultations
+- Halodoc/Alodokter are not specialized for this
+- Revenue model: SaaS per enrolled patient, sold to hospital groups or BPJS Kesehatan
+- Medvive model: AI handles monitoring/comms/refills, human doctors handle escalations only
+
+GTM PATH:
+1. Identify 2-3 Indonesian hospital group contacts (Siloam, Hermina, Mitra Keluarga)
+2. Understand SATUSEHAT API integration requirements
+3. Find local regulatory/clinical advisor (critical — cannot enter without one)
+4. Propose pilot: 500-patient chronic disease monitoring cohort
+
+VALIDATION QUESTION: Will a hospital group pay SaaS for AI-managed chronic disease monitoring that reduces their follow-up burden? This is the only question that matters.
+
+━━━ JAPAN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MARKET: 125M population. 29% aged 65+ (→ 35% by 2040). $100B government AI hospital investment planned. Telehealth $1.9B → $6B by 2035. PMDA IDATEN allows AI software iteration without re-approval.
+
+THE TRAP TO AVOID: Patient-facing teleconsultation. Ubie (12M monthly users, 1,700 institutions, Google-backed) owns symptom checking. Do not compete.
+
+THE WEDGE: Clinical back-office automation.
+- Japanese doctors spend 30-40% of time on documentation, not care
+- Japanese medical NLP is underserved — general LLMs perform poorly on Japanese clinical text
+- Opportunity: AI documentation, triage sorting, scheduling — sold as SaaS to hospital/clinic groups
+- Revenue model: SaaS per clinic/hospital, B2B only
+
+GTM PATH:
+1. Find a Japanese local partner — pharmaceutical (Shionogi, Daiichi Sankyo) or hospital group
+2. Target regional hospital network outside Tokyo (less competitive, more willing to pilot)
+3. Leverage existing digital health push from AMED (Japan Agency for Medical Research and Development)
+
+VALIDATION QUESTION: Will a Japanese hospital group pilot AI documentation/triage automation? And can we find a Japanese co-developer/partner in the next 90 days?
+
+━━━ SEQUENCING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Phase 1 (0-18 months): Indonesia pilot. Validate AI chronic care model. Get first paying hospital client.
+Phase 2 (12-36 months): Japan entry via local partner. Use Indonesia proof + learnings.
+Shared stack: AI monitoring engine, patient comms, clinical data pipelines — reusable across both.
+Team size target: ≤5 people across both markets. Indonesia: 1-2 ops. Japan: 1 BD + partner. Product: shared.`,
+      type: 'opportunity', linked: 'idea:715', by: 'A', pinned: true,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 7170, title: 'Indonesia vs Japan Telehealth — Side-by-Side Comparison',
+      body: `Research as of March 2026.
+
+DIMENSION          | INDONESIA                        | JAPAN
+-------------------|----------------------------------|----------------------------------
+Population         | 280M                             | 125M
+Core pain          | Access gap (2.1 docs/10K)        | Efficiency gap (aging + manual ops)
+AI role            | Extend doctor reach              | Replace administrative labour
+Our wedge          | Chronic disease mgmt B2B         | Hospital back-office automation
+Competition        | High (consumer); Low (B2B)       | Moderate; high localisation bar
+Main competitors   | Halodoc, Alodokter               | Ubie (symptom), NEC/Sony (devices)
+GTM                | Hospital group or BPJS           | Japanese pharma or regional hospital
+Revenue model      | SaaS per enrolled patient        | SaaS per clinic/hospital
+Regulatory         | SATUSEHAT + data localisation    | PMDA IDATEN (AI-friendly now)
+Speed to revenue   | 12-18 months                     | 24-36 months
+Defensibility      | Medium (can be replicated)       | High (Japanese NLP + relationships)
+Local partner?     | Needed but accessible            | Non-negotiable, harder to find
+Market size 2030   | $5-8B telehealth                 | $6B telehealth, $34.5B smart health
+Medvive model fit  | High — chronic care at scale     | High — back-office at scale
+Efficiency target  | $1M+ ARR with <3 people          | $2M+ ARR per person once in
+
+VERDICT:
+Indonesia = start here. Faster, cheaper, explicit demand signal.
+Japan = build toward. More defensible, higher ceiling, requires patience.
+Dual-market = the differentiated play nobody else is running.`,
+      type: 'insight', linked: 'idea:715', by: 'A', pinned: true,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    // TELEHEALTH ACTIONS
+    ensure(d.actions, {
+      id: 716, title: 'Indonesia: Map hospital group contacts (Siloam, Hermina, Mitra Keluarga)',
+      desc: 'Find 1-2 decision-makers at Indonesian hospital chains who oversee digital health or chronic disease programmes. Siloam has JCI accreditation and is most tech-forward. Hermina is largest by volume. Mitra Keluarga has strong chronic care focus. Goal: one exploratory call within 30 days to test willingness to pilot AI chronic disease monitoring.',
+      owner: 'A', due: 'urgent', cat: 'contact', done: false,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 717, title: 'Indonesia: Understand SATUSEHAT API + BPJS reimbursement model',
+      desc: 'SATUSEHAT compliance is the gate to JKN reimbursement. Understand: (1) what the SATUSEHAT API requires for a chronic disease management integration, (2) what the BPJS reimbursement mechanism looks like for telehealth/remote monitoring, (3) whether a Singapore-based company can integrate directly or requires an Indonesian entity. Research: Ministry of Health SATUSEHAT developer docs + speak with one Indonesian healthtech lawyer.',
+      owner: 'B', due: 'soon', cat: 'research', done: false,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 718, title: 'Japan: Find local partner candidate — pharma or regional hospital',
+      desc: 'Japan entry is gated by local partner. Candidates: (1) Shionogi — already partnered with Akili on digital therapeutics, active in digital health; (2) Daiichi Sankyo — announced broad digital health review; (3) Regional hospital network outside Tokyo — less competitive, more willing to pilot. Goal: identify 2-3 specific contacts via LinkedIn or conference circuit within 60 days. Alodokter already has a tie-up with Marubeni (Japanese trading company) — Marubeni is worth exploring as an Indonesia-Japan bridge.',
+      owner: 'C', due: 'soon', cat: 'contact', done: false,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 719, title: 'Investigate Medvive GTM — how 300K patients in 18 months?',
+      desc: 'This remains the single most important unanswered question. Medvive = $1B ARR, 1 person, 300K patients in 1.5 years. $300-400 per patient. This is NOT organic growth. Must have been: (1) insurance/payer partnership that auto-enrolled patients, (2) employer health benefit channel, or (3) government/Medicare contract. Answer this and we have the Indonesia GTM playbook. Research: Medvive press coverage, LinkedIn, any conference talks by Matthew Gallagher.',
+      owner: 'A', due: 'urgent', cat: 'research', done: false,
+      comments: [], ts: '2026-03-06T00:00:00.000Z'
+    });
+
+    // ── MoM 3: AI Applications panel ── (existing notes continue below)
+      body: `Source: AI Applications & Societal Shifts panel, 26 Feb 2026. Speakers: Matthew Gallagher (Medvive), Ross (Life Kit), Unnamed enterprise AI speaker.
+
+HEADLINE NUMBER: Medvive — $1B+ annualized revenue, 300,000 patients, 1 employee, 1.5 years. $300-400 revenue per patient. This is the most extreme proof point of AI-first business economics we have seen.
+
+KEY VIEWPOINTS:
+
+1. LLM-POWERED VOICE AI — Ross (Life Kit): Shift from rule-based expert systems (Siri/Alexa) to LLMs is fundamental. LLMs have compressed knowledge of entire internet. Voice AI requires stateful, low-latency streaming stack — completely different from HTTP web apps. Latency = make-or-break, not optimization.
+
+2. HYPER-SCALABLE AI COMPANIES — Gallagher (Medvive): AI handles dev, support, data analysis. Solo founder scales without hiring. This is not theoretical — it is live at $1B ARR.
+
+3. WORKFORCE DISPLACEMENT — Unnamed speaker: Clients replacing 500-1,000 person call centers with AI NOW. Not future risk — current reality.
+
+4. UBI DISCUSSION: Panel acknowledged AI displacement may require UBI. Gallagher: UBI once fringe, now serious. AI is not just a new tool — it is a "tool builder" replicating human cognitive tasks. Society needs to collectively figure out a new purpose/game.
+
+5. GTM & TASTE as new moats — Ross + moderator: AI functionality replicable within a week. Success = marketing/distribution excellence + "taste" (emotional resonance of product). Technology alone is no longer defensible.`,
+      type: 'insight', linked: 'contact:701', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 722, title: 'Medvive Model — Deconstructing the $1B Solo Business',
+      body: `Matthew Gallagher / Medvive key facts:
+
+METRICS:
+- 300,000 active patients
+- $1B+ annualized revenue
+- $300-400 average revenue per patient
+- 1 employee (founder only)
+- Live 1.5 years
+
+HOW IT WORKS:
+- AI handles: software development, patient support, data gathering, data analysis
+- Founder focuses on: direction, taste, and GTM decisions
+- Zero management overhead, zero hiring friction, zero internal bureaucracy
+
+WHAT THIS MEANS FOR US:
+The Medvive model breaks the fundamental assumption that revenue scales with headcount. A 3-person team with the right AI stack and the right market could realistically target $100M-$300M ARR without traditional org structure.
+
+KEY UNKNOWN: How did 300,000 patients get acquired in 1.5 years? This is the most important question. Without understanding the acquisition channel, the model is incomplete. Was it:
+- Paid acquisition (Google/Meta health ads)?
+- Insurance / employer partnerships?
+- Referral network?
+- Marketplace listing (Zocdoc equivalent)?
+
+ACTION: Research Medvive's GTM / patient acquisition strategy.`,
+      type: 'insight', linked: 'contact:701', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 723, title: 'China Counterparts — Voice AI & Telehealth',
+      body: `From MoM Section 4: China counterparts to panel companies.
+
+VOICE AI:
+
+Mobvoi (出门问问) — Beijing. Founded 2012. Co-founders: Dr. Zhifei Li (PhD CS Johns Hopkins, ex-Google NLP scientist), Mike Lei (ex-Google Staff Research Scientist). Products: TicWatch series, AI voice assistants, digital humans, smart vehicle AI, AIGC. Investors: Google, Sequoia Capital, ZhenFund, SIG, Goertek. HKEX listed (~460M HKD market cap). "Magic Sound Workshop" voice product: 1M+ users globally. NOTE: Most sophisticated Chinese voice AI company with credible Western pedigree. Direct counterpart to Life Kit.
+
+AISpeech (思必驰科技) — Jiangshan, Zhejiang. Founded 2007. Co-founders: Gao Shixing (Cambridge MBA), Yu Kai (IEEE Fellow, ISCA Fellow, Shanghai Jiao Tong professor). Revenue: 2024 ~130M CNY. Investors: Alibaba, Oriza Holdings. Valuation: 5B CNY (Hurun 2023 Unicorn List). Focus: full-link dialogue systems, voice chips, smart travel/office/IoT B2B. NOTE: Deep enterprise voice AI in China. B2B focused — relevant for call center replacement thesis.
+
+TELEHEALTH:
+
+Ping An Good Doctor (平安好医生) — Shanghai. Founded 2014. HKEX listed (1833.HK). Parent: Ping An Insurance Group. CEO: Wang Tao (ex-Alibaba VP Group Technology, founding team of Taobao/Alipay). Revenue: RMB 5.1B (2024). Employees: 2,000+. Investors: IDG Capital ($50M Series A), SoftBank Vision Fund ($400M pre-IPO). Market cap: HKD 3.5B (Feb 2026). Products: AI doctor consultations, online pharmacy, health management. NOTE: This is the Medvive equivalent at Chinese scale — but with 2,000 employees. The gap between Ping An Good Doctor (2,000 people, $700M revenue) and Medvive (1 person, $1B revenue) is the most striking data point in the comparison.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 724, title: 'Risk & Opportunity: AI Workforce Displacement at Scale',
+      body: `Unnamed enterprise AI speaker: clients replacing 500-1,000 person call centers with AI within one year. This is CURRENT, not projected.
+
+MACRO RISK FOR ANY B2B AI PLAY:
+- Enterprise clients will face massive internal resistance to AI-driven headcount reduction
+- Change management is now as important as technology quality
+- Regulatory risk: labor protection laws in some Asian markets may slow adoption
+
+OPPORTUNITY FRAMING:
+The same displacement that creates social risk creates business opportunity. Any company that can:
+(a) Replace a 500-person call center function with AI reliably
+(b) Navigate the change management and compliance requirements
+(c) Do it at a price point where the ROI is undeniable
+
+...has a massive TAM. Asian financial services, telecoms, insurance companies run the largest call centers in the region.
+
+UBI SIGNAL: Gallagher called UBI "increasingly serious." If governments begin deploying UBI pilots, it creates a new consumer with disposable income and time — which actually INCREASES demand for services like telehealth, entertainment, and personal AI assistants. Paradoxically, AI displacement could expand the consumer TAM for AI-first consumer products.`,
+      type: 'risk', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 731, title: 'Investigate Medvive GTM — how did they acquire 300K patients?',
+      desc: 'The Medvive model only works if patient acquisition is replicable. Research: (1) What channel drove 300K patients in 1.5 years? (2) Is there a regulatory/licensing moat in US telehealth that limits replication in SE Asia? (3) What is the clinical service mix — GLP-1/weight loss, mental health, primary care?',
+      owner: 'A', due: 'urgent', cat: 'research', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 732, title: 'Map ASEAN telehealth regulatory landscape',
+      desc: 'Before pursuing a Medvive-equivalent in SE Asia: understand telemedicine licensing requirements in Indonesia, Vietnam, Philippines, Thailand. Key question: is there a market where a foreign founder can operate a telehealth platform without local medical licensing?',
+      owner: 'B', due: 'soon', cat: 'research', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 733, title: 'Reach out to Mobvoi or AISpeech for voice AI partnership exploration',
+      desc: 'Both companies have production voice AI stacks with enterprise deployments. If we pursue the AI call center replacement idea for ASEAN financial institutions, we need a Chinese voice AI technical partner. Mobvoi has Google pedigree and Western-facing experience — likely the better first call.',
+      owner: 'C', due: 'normal', cat: 'contact', done: false,
+      comments: [], ts: '2026-02-26T00:00:00.000Z'
+    });
+
+    // ── MoM 4: AI Company Growth & Efficiency — Grant/Gamma + Hueman/SBC — 25 Feb 2025 ──
+
+    ensure(d.contacts, {
+      id: 801, name: 'Grant', org: 'Gamma', role: 'Co-Founder',
+      region: 'usa', type: 'founder', warm: 'hot', email: '', by: 'A',
+      notes: 'Co-founder of Gamma (AI presentation tool). $100M ARR, 52 employees, 70M users, $150M raised, $1B+ valuation. ~$2M ARR per employee. Philosophy: hire painfully slowly, stay close to customer. Previously London, moved to SF for community. SBC-affiliated.',
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 802, name: 'Hueman', org: 'South Park Commons (SBC)', role: 'General Partner',
+      region: 'usa', type: 'vc', warm: 'warm', email: '', by: 'A',
+      notes: 'GP at South Park Commons — early-stage incubator for technical engineers. Also involved with unnamed AI infrastructure company. Front-row seat to AI model ecosystem. Thesis: small agile teams + speed + customer proximity = winning formula. Full name not captured.',
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 811, title: 'AI-Native Productivity Tool for Asian SME/Enterprise Market',
+      desc: 'Gamma: $100M ARR, 52 people, 70M users, $2M revenue per employee. The 1B+ presentation users globally are overwhelmingly in Asia (China, SE Asia, Japan). Yet all the hyper-efficient AI productivity tools (Gamma, Notion AI, etc.) are US-first. Opportunity: build an AI-native productivity tool (presentations, docs, or comms) purpose-built for Asian SME workflows — local language, local integrations (WeChat, DingTalk), local compliance. Apply Gamma\'s lean model to a market they do not prioritise.',
+      origin: 'both', cat: 'consumer', market: 4, exec: 4,
+      source: 'Grant / Gamma — AI Growth & Efficiency MoM 25 Feb 2025', by: 'A', votes: [],
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 812, title: 'Hybrid Model Orchestration Layer for Asian AI Developers',
+      desc: 'Hueman/Grant: best AI apps use 4-6 models in orchestration — closed + open-source + fine-tuned, selected per task for cost/performance. This is now table stakes in the US but a major pain point for Asian dev teams who must also navigate DeepSeek, Qwen, GLM, Doubao alongside GPT/Claude. Opportunity: a model orchestration and routing layer purpose-built for Asia — optimising across Chinese and Western models, handling latency, cost, and compliance simultaneously.',
+      origin: 'both', cat: 'platform', market: 4, exec: 3,
+      source: 'Hueman / SBC — AI Growth & Efficiency MoM 25 Feb 2025', by: 'A', votes: [],
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // NOTES
+    ensure(d.notes, {
+      id: 821, title: 'Gamma/SBC MoM — AI Growth & Efficiency: Core Signals',
+      body: `Source: Grant (co-founder Gamma) + Hueman (GP, South Park Commons). Interview, 25 Feb 2025.
+
+GAMMA BENCHMARKS (the new efficiency standard):
+- $100M ARR / 52 employees = ~$2M ARR per employee
+- 70 million users
+- $150M raised, $1B+ valuation
+- 1 billion presentation users worldwide = TAM
+
+KEY VIEWPOINTS:
+
+1. EXTREME EFFICIENCY: Gamma achieved this through: (a) pent-up demand — right product at right moment, (b) hiring painfully slowly — never dilute culture with fast scaling, (c) co-located small team — proximity = speed.
+
+2. SPEED & ADAPTABILITY: Roadmaps planned only months ahead. The AI landscape is evolving too fast for long-term planning. Real-time decision-making is the core competency.
+
+3. HYBRID MODEL APPROACH: Best AI apps use 4-6 models in orchestration. Mix of large closed-source + open-source + fine-tuned custom models. Select per task for cost/performance/capability. Single model dependency = strategic risk.
+
+4. NOT A BUBBLE: Real willingness to pay (direct subscription). Supply constraint on GPUs = demand is real. Will not bust like dot-com because utility is genuine.
+
+5. SOFTWARE SURFACE AREA IS EXPANDING: AI gives engineers unprecedented leverage. We will always underestimate how much software can be built. This is a beginning, not an end.
+
+6. FOUNDER COMMUNITY MATTERS: Grant moved from London to SF specifically for community energy. SBC = the institutional version of this. For us: our team's network is a core asset, not a nice-to-have.`,
+      type: 'insight', linked: 'contact:801', by: 'A', pinned: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 822, title: 'China Counterparts — AI Presentation Tools',
+      body: `MoM Section 4 counterparts to Gamma:
+
+AiPPT.com (像素绽放 PixelBloom) — HK-headquartered. Founded ~2023. Parent: PixelBloom (像素绽放). Founder: Rong Cai (ex-Sina, ex-Sohu, founded Weimeng Media 2013). Series B raised — investors: Visual China Group, Xinglian Capital (Zhipu Z Fund), Yizhuang Guotou (亦庄国投, national team), Guoke Investment (国科投资), Inno Angel Fund, Tsinghua Alumni Seed Fund. 3.5M MAU (May 2025). Ranked #1 AI PPT in China, #2 globally. Partners: Doubao, Zhipu, Evernote, Lenovo. Business models: B2C + channel + B2B/B2G. NOTE: The most direct Gamma counterpart in China. Has "national team" (国家队) backing — signals government AI office productivity push.
+
+ChatPPT (讯飞智文) — Product of iFlytek (科大讯飞, SZSE: 002230). Uses iFlytek Spark cognitive model. iFlytek founded 1999 by Liu Qingfeng (PhD Signal Processing, USTC). iFlytek TTM revenue: ¥18.3B CNY. Market cap: ~$12.8B USD (Feb 2026). NOTE: Enterprise/gov-focused, deep Chinese language NLP pedigree. ChatPPT is one product in a large suite — not a pure-play.
+
+KEY OBSERVATION vs GAMMA: Both Chinese counterparts are heavily government/enterprise oriented. Neither has Gamma's direct B2C subscription efficiency. The lean, consumer-first, $2M/employee model has no Chinese equivalent — this is a genuine gap.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 823, title: 'Benchmarks: ARR-per-Employee Across Our MoMs',
+      body: `Efficiency benchmarks from companies encountered across all 4 MoMs:
+
+| Company       | ARR        | Team  | ARR/Employee | Notes                        |
+|---------------|------------|-------|--------------|------------------------------|
+| Medvive       | $1B+       | 1     | $1B+         | Telehealth, AI-automated ops |
+| Gamma         | $100M      | 52    | ~$2M         | AI presentations, direct B2C |
+| Shopify       | $11.6B     | ~10K  | ~$1.16M      | Platform, not pure AI-native |
+| Gen. Translation | <$10M   | 2-10  | est. $1-2M   | Seed stage, developer tooling |
+
+INTERPRETATION:
+- The new benchmark for AI-native companies is $1-2M ARR per employee minimum
+- Medvive ($1B+/person) is an extreme outlier enabled by healthcare billing economics
+- Gamma ($2M/person) is the more replicable model for our purposes
+- Any business we build should be designed from day one to hit $1M+ ARR per team member
+
+FOR OUR 3-PERSON TEAM:
+At $1M ARR/person: target $3M ARR as proof of model
+At $2M ARR/person: target $6M ARR as Series A signal
+At Gamma efficiency: $100M ARR should be achievable at <100 people`,
+      type: 'insight', linked: null, by: 'A', pinned: true,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 831, title: 'Define our ARR-per-employee target before committing to any idea',
+      desc: 'Before we pick our business: reverse-engineer from the Gamma/Medvive efficiency benchmarks. Any idea we pursue must plausibly reach $1M+ ARR per team member within 24 months. Use this as a filter — reject ideas that require large ops teams to scale.',
+      owner: 'team', due: 'urgent', cat: 'decision', done: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 832, title: 'Map which of our ideas are B2C-subscription-eligible vs B2B-enterprise',
+      desc: 'Gamma\'s $2M/employee efficiency comes from direct B2C subscriptions with zero sales overhead. Our B2B ideas (call center replacement, deterministic AI) will have longer sales cycles and lower efficiency ratios. Categorise each idea by revenue model and model the ARR/employee trajectory for each.',
+      owner: 'A', due: 'soon', cat: 'decision', done: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // ── MoM 5: AI Data Infrastructure — Garrett Lord / Handshake — 25 Feb 2026 ──
+
+    // CONTACTS
+    ensure(d.contacts, {
+      id: 901, name: 'Garrett Lord', org: 'Handshake', role: 'Co-Founder',
+      region: 'usa', type: 'founder', warm: 'hot', email: '', by: 'A',
+      notes: 'Co-founder of Handshake. Originally college recruiting platform — pivoted to AI training data in March 2025. New data business: $0 to hundreds of millions ARR in 11 months, projecting $1B+ run-rate 2026. Currently turning away hundreds of millions in work due to capacity constraints. Network: 22M students, 92% of US universities. Investors: True Ventures (Tony Conrad), Matt Mazza. 20-person AI research team. Origin story: drove across US, slept in car to pitch universities. Michigan Tech alum.',
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.contacts, {
+      id: 902, name: 'Serena Ge', org: 'Datacurve', role: 'Co-Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'warm', email: '', by: 'A',
+      notes: 'Chinese-Canadian. Dropped out of Waterloo CS to found Datacurve. Inspired by internship at Cohere. Datacurve: gamified bounty platform for coding data, 14,000+ engineers, $1M bounties distributed. Series A: $17.7M led by Chemistry VC (Mark Suster) + YC, Oct 2025. Co-founder: Charley Lee (also Waterloo). Builds SFT + RL environment data for foundation model labs.',
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 911, title: 'Asian Professional Data Network for AI Training',
+      desc: 'Handshake\'s moat: 22M students/professionals across every field of study — the supply-side network to generate structured human knowledge for AI training. Asia has 100M+ university students and the world\'s largest concentrations of engineers, doctors, and finance professionals. None of this knowledge is structured for AI training. Opportunity: build the Asian equivalent of Handshake\'s data business — starting with Chinese/SE Asian domain expertise (manufacturing, TCM, legal, finance) that Western AI labs actively need but cannot access.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 3,
+      source: 'Garrett Lord / Handshake MoM 25 Feb 2026', by: 'A', votes: [],
+      comments: [{
+        id: 9001, text: 'Handshake grew $0 to hundreds of millions ARR in 11 months. The data demand from AI labs is essentially uncapped. If we can build a supply-side network of Asian domain experts — Chinese doctors, engineers, lawyers — we are selling into the same buyers (Anthropic, OpenAI, Google) with differentiated data they cannot get elsewhere.',
+        by: 'A', ts: '2026-02-25T01:00:00.000Z'
+      }],
+      ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 912, title: 'RL Environment Builder for Chinese Industrial / Enterprise AI',
+      desc: 'Handshake is building "video games" (Dockerized RL environments) where AI models learn jobs — Bloomberg for finance, Excel for accounting, etc. Chinese enterprises need the equivalent for their own workflows: SAP deployments, WeChat/DingTalk enterprise tools, Chinese legal databases, manufacturing MES systems. Opportunity: build RL training environments for Chinese enterprise AI — sold to Chinese AI labs (Zhipu, Baidu, Alibaba) building domain-specific models.',
+      origin: 'china', cat: 'b2b', market: 4, exec: 3,
+      source: 'Garrett Lord / Handshake MoM 25 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // NOTES
+    ensure(d.notes, {
+      id: 921, title: 'Handshake MoM — AI Data Infrastructure: Core Thesis',
+      body: `Source: Garrett Lord, Co-founder of Handshake. Interview 25 Feb 2026.
+
+THE PIVOT: Handshake was #1 US college recruiting platform (22M students, 92% of US universities, 1M+ employer clients). In March 2025, pivoted to AI training data. New data business surpassed recruiting business in revenue within 11 months. Projecting $1B+ run-rate 2026. Turning away hundreds of millions in work due to capacity.
+
+CORE THESIS — DATA IS THE BOTTLENECK:
+AI labs have exhausted public internet data. The next frontier requires human professional knowledge that is not on the internet:
+- Drug discovery judgment (not just drug info)
+- Nuclear engineering decisions
+- Finance professional expertise
+- Legal reasoning at expert level
+
+HANDSHAKE'S MOAT: 22M students/professionals across every field. Trusted brand. 92% of US universities. No one else has this supply-side network.
+
+HOW IT WORKS:
+1. Identify job domain (using O*NET taxonomy — every job category)
+2. Source domain experts from Handshake network
+3. Build Dockerized RL environments (tools: Bloomberg, Excel, PowerPoint)
+4. Experts provide "right score" — reinforcement learning feedback
+5. Model climbs from first-year associate to seasoned expert capability
+
+THE WAYMO ANALOGY: Same progression as self-driving cars — humans handle exceptions at first, complexity increases, human feedback trains the model, humans move to higher-level exceptions.
+
+NEW JOB CATEGORY: Tens of millions of people will work in human-in-the-loop oversight roles. Not job destruction — job transformation.
+
+GROWTH RATE: $0 → hundreds of millions ARR in 11 months. This is the fastest-growing revenue story across all 5 MoMs.`,
+      type: 'insight', linked: 'contact:901', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 922, title: 'China Counterparts — AI Training Data Providers',
+      body: `MoM Section 4: Chinese counterparts to Handshake and Datacurve.
+
+DATATANG (数据堂) — Beijing. Founded 2011. Founder: Hongwei Qi (ex-NEC China Research, Stanford CS). NEEQ listed (stock: 831590). Market cap: ~3.2B CNY. 2,000-5,000 employees. 2,000+ global customers. Assets: 100K+ copyrighted datasets, 500M+ hours voice data, 80TB computer vision data, PB-scale LLM data. Full-stack: copyrighted datasets + data customization + industry solutions. NOTE: Most established Chinese AI data company. Direct Handshake competitor at the data infrastructure layer.
+
+BASICFINDER (倍赛科技) — Beijing. Founded ~2018. Founder: Du Lin (SJTU CS, serial entrepreneur from sophomore year). Revenue: tens of millions RMB (2023). 300 employees. Operates 10 data processing centers, 100+ full-time annotators. RLHF multi-turn dialogue annotation — specifically LLM alignment. SaaS + private deployment. Investors: Dongfang Jiafu, Dingxu Investment, New World, Wuyue Capital, TalkingData. NOTE: Most technically aligned to Handshake's RLHF/RL environment work. Smaller but focused.
+
+TESTIN AI DATA (云测数据) — Beijing (Jiuxianqiao). Founded ~2011 (AI data brand of Testin). Founder: Jun Wang (PKU professor, Information Management, AI Research Institute VP dean) + Martin Ma. 1M+ enterprise/developer clients. Series B/C raised. Focus: data collection + annotation + platform private deployment across autonomous driving, smart home, IoT, industrial AI. NOTE: Broadest coverage but less specialized than Handshake's professional domain focus.
+
+DATACURVE — San Francisco. Founded 2024. Founders: Serena Ge (Chinese-Canadian, Waterloo CS dropout, ex-Cohere intern) + Charley Lee (Waterloo). Series A: $17.7M — Chemistry VC (Mark Suster) + YC, Oct 2025. 14,000+ engineers on platform. $1M bounties distributed. Speciality: coding SFT + RL environments for foundation model labs. NOTE: This is a US company by Chinese-Canadian founders — the bridge between Chinese engineering talent and Western AI lab demand.
+
+KEY OBSERVATION: None of the Chinese companies are doing Handshake's RL environment approach (Dockerized tools + expert scoring). They are all annotation-first. The RL environment layer is an open gap in China.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 923, title: 'Opportunity: Asian Domain Expert Data is the Scarcest AI Resource',
+      body: `Garrett Lord's core insight applied to Asia:
+
+THE GAP: AI labs have exhausted English-language internet data. The next frontier is:
+(a) Non-English professional knowledge (Chinese medicine, Japanese engineering, Korean finance)
+(b) Knowledge that was never digitised (factory floor expertise, master craftsmen, clinical judgment)
+(c) Knowledge in closed systems (Chinese legal databases, internal enterprise workflows)
+
+WHY THIS MATTERS FOR US:
+- Western AI labs (Anthropic, OpenAI, Google) are actively buying Asian domain expert data
+- Chinese AI labs (Zhipu, Baidu, Alibaba) need structured data for their own domain fine-tuning
+- There is NO Handshake equivalent in Asia — no trusted supply-side network of Asian domain experts
+
+OUR POTENTIAL EDGE:
+- Our China network from robotics/VC research = access to technical talent
+- Singapore base = neutral ground for Chinese experts to contribute to Western lab projects
+- We understand both sides of the data demand (what Western labs want, what Chinese experts have)
+
+BUSINESS MODEL: Follow Handshake — data infrastructure + RL environments. Start narrow (one domain: manufacturing, or finance, or medical). Expand systematically using O*NET-equivalent taxonomy.
+
+RISK: This is infrastructure/supply-chain heavy. Requires building annotator/expert community before revenue. High quality bar. But Handshake proved the ramp can be extremely fast ($0 to $100Ms in 11 months) if demand is there — and demand from AI labs is essentially uncapped right now.`,
+      type: 'opportunity', linked: 'idea:911', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 931, title: 'Validate AI lab demand for Asian domain expert data',
+      desc: 'Test the core hypothesis of idea 911: do Anthropic/OpenAI/Google actively seek Chinese/SE Asian professional domain data (medical, manufacturing, legal, finance)? Contact: (1) any AI lab data procurement contacts in our network, (2) Serena Ge / Datacurve — she bridges Chinese engineering talent and Western labs already.',
+      owner: 'A', due: 'urgent', cat: 'contact', done: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 932, title: 'Reach out to Serena Ge / Datacurve',
+      desc: 'Chinese-Canadian founder, Waterloo/YC/Chemistry VC backed, building exactly at the intersection of Chinese engineering talent and Western AI lab demand. Potential: (1) partner on Asian coding data, (2) learn her AI lab customer acquisition playbook, (3) explore if she needs a China-side supply network we could provide.',
+      owner: 'A', due: 'soon', cat: 'contact', done: false,
+      comments: [], ts: '2026-02-25T00:00:00.000Z'
+    });
+
+    // ── MoM 6: AI Agent Infrastructure — Ivan Burazin / Daytona — 24 Feb 2026 ──
+
+    // CONTACTS
+    ensure(d.contacts, {
+      id: 1001, name: 'Ivan Burazin', org: 'Daytona', role: 'Co-Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'hot', email: '', by: 'A',
+      notes: 'Co-founded Codeanywhere 2009 (cloud IDE pioneer). Founded Shift developer conference — grew to largest in Europe, acquired by Infobip. Chief Developer Experience Officer at Infobip before founding Daytona. Daytona: $5M ARR, 23 people, $31M raised (seed: Upfront Ventures; Series A: CRV / Chris Moore). Customers: FedEx, Writer, Cohere, FourthBrain, YC companies. Claims fastest-growing infrastructure company of all time.',
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 1011, title: 'Agent Sandbox Infrastructure for Asian AI Developers',
+      desc: 'Daytona: $1M ARR in first 2 months, $5M ARR at year end, targeting $25M. Market: 100+ trillion sandbox instances/year as agent populations scale. AWS/GCP/Azure are human-centric — fundamentally wrong architecture for agents (need sub-100ms spin-up, composable CPU/RAM/GPU, disposable RL environments). Asian AI developers (Chinese agent builders, SE Asian enterprise AI teams) face same infrastructure gap. Opportunity: build or white-label an agent-native sandbox layer for Asia — either as a regional Daytona or as a distribution partner for Daytona in markets they don\'t cover.',
+      origin: 'both', cat: 'platform', market: 5, exec: 3,
+      source: 'Ivan Burazin / Daytona — AI Agent Infrastructure MoM 24 Feb 2026', by: 'A', votes: [],
+      comments: [{
+        id: 10001, text: 'Daytona is Upfront Ventures portfolio — same fund as Aditi Maliwal (AI Adoption panel moderator). This is a warm network connection. Ivan is worth a direct outreach.',
+        by: 'A', ts: '2026-02-24T01:00:00.000Z'
+      }],
+      ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 1012, title: 'RL Training Environment Service for Chinese AI Labs',
+      desc: 'Daytona\'s fastest-growing use case: RL environments where agents respawn in hundreds of thousands of disposable sandboxes simultaneously — "video game character respawning." Chinese AI labs (Zhipu, Baidu, ByteDance) are all training domain-specific models and need exactly this infrastructure. PPIO is the only Chinese pure-play agent sandbox competitor and it is small. Alibaba/Tencent/Volcano Engine offer this but as a feature inside a massive cloud suite — not agent-native. Opportunity: agent-native RL environment service built specifically for Chinese AI lab training workflows.',
+      origin: 'china', cat: 'platform', market: 4, exec: 3,
+      source: 'Ivan Burazin / Daytona + PPIO/Alibaba/Tencent counterparts — MoM 24 Feb 2026', by: 'A', votes: [],
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // NOTES
+    ensure(d.notes, {
+      id: 1021, title: 'Daytona MoM — AI Agent Infrastructure: Core Thesis',
+      body: `Source: Ivan Burazin, Co-founder & CEO of Daytona. Presentation 24 Feb 2026.
+
+DAYTONA METRICS:
+- $1M ARR in first 2 months post-relaunch
+- $3M ARR 1.5 months later
+- $5M ARR at year end
+- Target: $25M ARR (5x) by end of next year
+- 23 people, >half worked together 8+ years
+- $31M raised: seed (Upfront Ventures) + Series A (CRV / Chris Moore)
+- Customers: FedEx, Writer, Cohere, FourthBrain, YC companies
+- Self-claimed: fastest-growing infrastructure company of all time
+
+CORE THESIS — AGENTS NEED THEIR OWN COMPUTERS:
+AI agents are deterministic software + LLM + tools. They require a "computer" to operate. But AWS/GCP/Azure are designed for human users — wrong latency, wrong composability, wrong pricing model for agents.
+
+Daytona provides "composable computers" (sandboxes):
+- Sub-100ms spin-up (agents can't wait like humans)
+- Configurable per-task: choose exact CPU, RAM, GPU, OS
+- Disposable: create, use, destroy — no persistent state needed
+- Lower token consumption vs traditional VMs
+
+THREE SANDBOX USE CASES:
+1. CODING & COMMAND EXECUTION — agents write/run/debug code, data analysis, drug discovery
+2. COMPUTER & BROWSER USE — agents interact with websites/desktop software without APIs
+3. REINFORCEMENT LEARNING — agents respawn in hundreds of thousands of environments simultaneously (Waymo/video game analogy — same as Handshake's RL environment insight)
+
+MARKET SIZE: 100+ trillion sandbox instances/year projected as agent population scales.
+
+NETWORK NOTE: Upfront Ventures (Aditi Maliwal, AI Adoption panel moderator) is Daytona's seed investor. This is a warm connection in our network.`,
+      type: 'insight', linked: 'contact:1001', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 1022, title: 'China Counterparts — AI Agent Sandbox / Infrastructure',
+      body: `MoM Section 4: Chinese counterparts to Daytona.
+
+PPIO (派欧云) — Shanghai. Founded 2017. Founders: Yao Xin (姚欣, founder of PPTV, ex-BlueRun Ventures partner) + Wang Wenyu (王闻宇, former PPTV chief architect, co-founder of Jidou Car Networking — China's first in-car intelligent system). Product: Agent Sandbox — EC2-compatible, isolated cloud runtime for AI agents, sub-ms startup. Daily token calls: 1B+. Users: 10,000+ registered. Investors: Hong Kong Investment Corp, China Creative Ventures ($5M Series A-). NOTE: Most direct Daytona counterpart in China. Small but focused, strong technical founders. Worth monitoring.
+
+ALIBABA CLOUD (阿里云) — Hangzhou. Founded 2009 by Dr. Wang Jian (ex-Microsoft researcher, Alibaba CTO). Agent Runtime: one-stop multimodal agent OS, serverless, millisecond startup, 10,000+ concurrent instances. Pay-as-you-go. NOTE: Biggest Chinese cloud, but agent infra is one feature in a massive suite — not agent-native positioning. Enterprises default to it, not choose it.
+
+VOLCANO ENGINE (火山引擎) — Beijing. ByteDance's cloud platform. Code Sandbox + AI agent suite. Revenue: exceeded 10B RMB in 2024. 5.4% market share in China's public cloud LLM invocation. NOTE: Fast-growing, ByteDance AI stack as moat, but same issue — not agent-native.
+
+TENCENT CLOUD (腾讯云) — Founded 2013. Agent Development Platform 2.0 (ADP). 70%+ of leading Chinese internet companies, 90%+ of leading Chinese gaming companies use Tencent Cloud. NOTE: Best positioned for gaming/entertainment agent use cases given gaming client base.
+
+KEY OBSERVATION: PPIO is the only agent-native Chinese competitor. The three hyperscalers offer agent infra as a feature. The agent-native gap in China is real — and PPIO is small enough that a focused challenger with the right team could compete.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 1023, title: 'Convergence Signal: RL Environments Appear in Both Handshake AND Daytona MoMs',
+      body: `CROSS-MoM PATTERN — same concept surfaced independently in two sessions:
+
+HANDSHAKE (Garrett Lord): AI labs need RL environments — "video games" where models learn jobs. Dockerized tools (Bloomberg, Excel) + human expert scoring. Building this for every O*NET job category.
+
+DAYTONA (Ivan Burazin): RL is the fastest-growing sandbox use case. Agents respawn in hundreds of thousands of disposable environments simultaneously for trial-and-error learning. "Like a video game character respawning."
+
+BOTH use the video game / respawning analogy independently.
+
+WHAT THIS MEANS:
+RL environment infrastructure is the most capital-intensive and technically demanding part of the AI training stack — and it's where demand is most acute right now. Two different companies, two different sessions, same signal.
+
+FOR US: This reinforces Idea 912 (RL Environment Builder for Chinese Enterprise AI) as a high-conviction idea. The infrastructure layer (Daytona) and the data layer (Handshake) are both pointing at the same bottleneck. Whoever builds the Chinese equivalent of both — an RL environment + expert data pipeline — for Chinese industrial AI clients has a defensible position.`,
+      type: 'insight', linked: null, by: 'A', pinned: true,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 1031, title: 'Reach out to Ivan Burazin / Daytona',
+      desc: 'Warm connection via Upfront Ventures (Aditi Maliwal moderated panel we attended). Explore: (1) Daytona\'s Asia expansion plans — is there a distribution partnership opportunity? (2) Agent infrastructure demand from Chinese AI labs — do they serve any? (3) Intro to Chris Moore at CRV (Series A lead).',
+      owner: 'A', due: 'soon', cat: 'contact', done: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 1032, title: 'Research PPIO (派欧云) — only agent-native Chinese sandbox competitor',
+      desc: 'PPIO is the most direct Chinese counterpart to Daytona. Understand: (1) current traction and customer base, (2) whether they are expanding beyond China, (3) founding team background (Yao Xin is a notable Chinese entrepreneur). Assess: is PPIO a potential partner, competitor, or acqui-hire target?',
+      owner: 'B', due: 'normal', cat: 'research', done: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // ── SYNTHESIS THESIS (restore if blank) ──────────────────────
+    if (!d.thesis) {
+      d.thesis = `VENTURE THESIS — v7 (TELEHEALTH PRIORITY, March 2026)
+
+━━━ PRIMARY FOCUS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 AI TELEHEALTH — INDONESIA + JAPAN (Ideas 711, 714, 715)
+
+INDONESIA (start now — 0-18 months):
+Wedge: AI chronic disease management, sold B2B to hospital groups and BPJS. NOT consumer.
+Why: 280M people, 2.1 docs/10K, JKN covers 98%. Halodoc/Alodokter own consumer (don't fight them).
+Medvive model: AI monitors patients, humans handle escalations only.
+Target: signed pilot with Indonesian hospital group within 12 months.
+
+JAPAN (build toward — 12-36 months):
+Wedge: Hospital back-office automation — clinical documentation, triage NLP, scheduling.
+Why: 29% aged 65+, $100B govt AI investment, doctors spend 30-40% of time on admin not care.
+Ubie owns patient-facing — our wedge is the administrative burden on doctors.
+Target: Japanese local partner identified within 60 days.
+
+DUAL-MARKET EDGE: No competitor runs both. Halodoc = Indonesia only. Ubie = Japan only.
+Shared AI stack: monitoring engine + patient comms + clinical pipelines transfers across both markets.
+
+━━━ SECONDARY OPPORTUNITIES ━━━━━━━━━━━━━━━━━━
+
+B. ASIAN DOMAIN DATA (Handshake model) — healthcare data from telehealth ops feeds this naturally
+C. DISCOVERY GAP (Shopify/UCP) — Asian merchant onboarding for agentic commerce
+D. AGENT INFRASTRUCTURE (Daytona) — vertical agent workflows for Asian enterprise
+
+━━━ THREE FILTERS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EFFICIENCY: $1M+ ARR per team member within 24 months (Gamma/Medvive benchmark)
+2. TTD/DV: Fast first value that compounds (Clements/Accel framework)
+3. GTM FIRST: Distribution built from day one — technology alone is not a moat
+
+━━━ IMMEDIATE NEXT STEPS ━━━━━━━━━━━━━━━━━━━━━
+
+Action 719: Crack Medvive GTM — how 300K patients in 18 months?
+Action 716: Indonesia hospital group contacts — Siloam / Hermina / Mitra Keluarga
+Action 717: SATUSEHAT API + BPJS reimbursement model research
+Action 718: Japan local partner search — Shionogi, Daiichi Sankyo, Marubeni`;
+    }
+
+    // ── MoM 6: AI Agent Infrastructure — Ivan Burazin / Daytona — 24 Feb 2026 ──
+
+    // CONTACTS
+    ensure(d.contacts, {
+      id: 1001, name: 'Ivan Burazin', org: 'Daytona', role: 'Co-Founder & CEO',
+      region: 'usa', type: 'founder', warm: 'hot', email: '', by: 'A',
+      notes: 'Co-founded Codeanywhere (cloud IDE) in 2013. Founded Shift developer conference — largest in Europe, acquired by Infobip. Chief Developer Experience Officer at Infobip before Daytona. Daytona: composable cloud sandboxes for AI agents. $1M ARR in first 2 months → $3M → ~$5M. Claims fastest-growing infrastructure company of all time. $31M raised: seed Upfront Ventures, Series A CRV (Chris Moore). 23 people, >half together 8+ years. Customers: FedEx, Writer, Cohere, FourthBrain, YC companies. Target: $25M run rate end of next year.',
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // IDEAS
+    ensure(d.ideas, {
+      id: 1011, title: 'Agent Sandbox Infrastructure for Chinese AI Agent Ecosystem',
+      desc: 'Daytona: fastest-growing infra company ever, $5M ARR in months. 100+ trillion sandbox instances/year projected TAM. Agents need composable computers — spin up in <200ms with precise CPU/RAM/GPU. Chinese AI agent ecosystem (Zhipu agents, Alibaba Qwen agents, ByteDance Coze) is exploding but agent infra is dominated by big cloud incumbents (Alibaba Cloud, Volcano Engine, Tencent Cloud) who are not purpose-built for agents. PPIO (派欧云) is the closest independent player but underfunded. Opportunity: build or invest in a pure-play agent sandbox layer for Chinese AI agent developers — usage-based, low-latency, token-efficient.',
+      origin: 'china', cat: 'platform', market: 5, exec: 2,
+      source: 'Ivan Burazin / Daytona — AI Agent Infrastructure MoM 24 Feb 2026', by: 'A', votes: [],
+      comments: [{
+        id: 10001, text: 'This is infrastructure-heavy and capital-intensive. More likely to be a partnership/investment angle than something we build. But the agent sandbox market in China is genuinely open — PPIO is the only pure-play and it is tiny vs Daytona. Worth monitoring.',
+        by: 'A', ts: '2026-02-24T01:00:00.000Z'
+      }],
+      ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.ideas, {
+      id: 1012, title: 'Agent Workflow Automation for Asian Enterprise (on top of Daytona/sandbox infra)',
+      desc: 'Daytona provides the infrastructure layer — composable sandboxes for agent coding, browser automation, RL. The application layer above this (industry-specific agent workflows) is wide open in Asia. Opportunity: build vertical agent workflows for Asian enterprises (e.g. manufacturing QC agents, financial compliance agents, supply chain agents) that run on Daytona-equivalent infrastructure. The infra is commoditising — the value is in the vertical workflow and the enterprise relationships.',
+      origin: 'both', cat: 'b2b', market: 5, exec: 4,
+      source: 'Ivan Burazin / Daytona MoM + cross-reference with Kerris/NVIDIA holistic AI thesis', by: 'A', votes: [],
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // NOTES
+    ensure(d.notes, {
+      id: 1021, title: 'Daytona MoM — AI Agent Infrastructure: Core Thesis',
+      body: `Source: Ivan Burazin, Co-founder & CEO Daytona. Presentation 24 Feb 2026.
+
+DAYTONA METRICS:
+- $1M ARR → $3M → ~$5M current, all within months of relaunch
+- Claims: fastest-growing infrastructure company of all time
+- Target: $25M run rate by end of next year (5x)
+- $31M raised: Upfront Ventures (seed), CRV/Chris Moore (Series A)
+- 23 people, >half together 8+ years
+- Customers: FedEx, Writer, Cohere, FourthBrain, YC companies
+- TAM projection: 100+ TRILLION sandbox instances/year
+
+CORE THESIS:
+1. AI agent population will grow to human scale — "digital knowledge workers"
+2. Agents need a NEW type of computer — not human-centric AWS/GCP/Azure
+3. Daytona provides "composable computers": spin up in <200ms with exact CPU/RAM/GPU/OS spec
+4. Three primary use cases:
+   (a) Coding & command execution — data analysis, drug discovery
+   (b) Browser & computer use — interacting with sites/apps that lack APIs
+   (c) Reinforcement learning — hundreds of thousands of disposable environments (video game respawn analogy)
+5. Token efficiency is the economic moat — fewer tokens = lower cost per agent task
+
+WHY THIS MATTERS FOR US:
+The agent infrastructure layer is commoditising fast (Alibaba, ByteDance, Tencent all building). The VALUE is moving UP the stack to:
+- Vertical agent applications (who owns the workflow + enterprise relationship)
+- Data quality (who trains agents with the right domain knowledge — see Handshake thesis)
+- Agent discovery (which agents/tools get found by orchestration systems — see UCP thesis)
+
+This is the infrastructure mega-trend that underlies ALL our other theses.`,
+      type: 'insight', linked: 'contact:1001', by: 'A', pinned: true,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 1022, title: 'China Counterparts — Agent Sandbox Infrastructure',
+      body: `MoM Section 4: Chinese counterparts to Daytona.
+
+PPIO (派欧云) — Shanghai. Founded 2017. Founders: Yao Xin (姚欣, founder of PPTV, ex-BlueRun Ventures China) + Wang Wenyu (王闻宇, former PPTV chief architect, co-founded Jidou Car Networking / China's first in-car intelligent system). Product: Agent Sandbox — EVM-compatible, isolated cloud runtime, sub-ms startup. Daily token calls: 1B+. Registered users: 5,000+. Investors: Hong Kong Investment Corp, China Creative Ventures ($6M Series A-). NOTE: THE most direct Daytona counterpart in China. Underfunded vs Daytona ($31M). Founders have strong media/tech pedigree. Worth monitoring for investment or partnership.
+
+ALIBABA CLOUD (阿里云) — Hangzhou. Founded by Dr. Wang Jian (ex-Microsoft researcher, former Alibaba CTO). Agent Runtime: one-stop multimodal cloud OS for AI agents, serverless, millisecond startup, 1,000+ concurrent agent instances. NOTE: Incumbant. Not a startup opportunity — competitive threat/reference point.
+
+VOLCANO ENGINE (火山引擎) — Beijing. ByteDance cloud platform. AI Cloud Native Agent Suite with Code Sandbox. Revenue: exceeded 10B RMB (2024). 21.4% market share in China's public cloud LLM invocation volume. NOTE: ByteDance's cloud arm. Fast-growing. Not independent — tied to ByteDance ecosystem.
+
+TENCENT CLOUD (腾讯云) — Founded 2010. Agent Development Platform (ADP) 2.0. 90% of leading Chinese internet companies, 80% of gaming companies use Tencent Cloud. AI Minutes in Tencent Meetings: +300% YoY. NOTE: Incumbent. Heavy enterprise relationships but not purpose-built for agents.
+
+LANDSCAPE SUMMARY: Chinese agent infra = 3 mega-incumbents (Alibaba, ByteDance/Volcano, Tencent) + 1 underfunded pure-play (PPIO). The pure-play independent opportunity exists — nobody has built the Chinese equivalent of Daytona at scale.`,
+      type: 'insight', linked: null, by: 'A', pinned: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.notes, {
+      id: 1023, title: 'The Agent Stack — How Our Theses Fit Together',
+      body: `Synthesised from Daytona MoM + all prior MoMs. The emerging AI agent economy has layers:
+
+LAYER 1 — INFRASTRUCTURE (Daytona, PPIO):
+Composable sandboxes. Spin up in <200ms. Token-efficient. Usage-based pricing.
+→ Commoditising fast. Incumbents (Alibaba/Tencent/ByteDance) entering. Hard to win here unless you are pure-play and very fast.
+
+LAYER 2 — DATA & TRAINING (Handshake, Datacurve):
+Human domain knowledge structured for agent training. RL environments. Professional expertise.
+→ Our highest-conviction opportunity. Asian domain data is the scarcest input. Handshake proved the ramp.
+
+LAYER 3 — DISCOVERY & DISTRIBUTION (Shopify/UCP, Agentic Commerce):
+How agents find and transact with merchants/services. Merit-based, not paid. UCP is the emerging protocol.
+→ Our second-highest conviction play. Nobody has built the Asian merchant onboarding layer for UCP.
+
+LAYER 4 — VERTICAL APPLICATIONS (industry-specific agent workflows):
+Manufacturing QC agents, financial compliance agents, supply chain agents, telehealth agents (Medvive).
+→ High value but enterprise sales cycle. Needs strong vertical relationships + domain data (ties to Layer 2).
+
+LAYER 5 — RELIABILITY & VERIFICATION (Logical Intelligence/EBMs):
+Mission-critical industries need deterministic AI. EBMs provide formal verification.
+→ Long-term structural play. Not yet commercialised in Asia. Patient capital required.
+
+WHERE WE SHOULD PLAY: Layer 2 (Data) feeds Layer 4 (Applications) which gets distributed via Layer 3 (Discovery). This is a coherent stack: collect Asian domain expert data → train vertical agents → get those agents discovered via agentic commerce/UCP.`,
+      type: 'insight', linked: null, by: 'A', pinned: true,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    // ACTIONS
+    ensure(d.actions, {
+      id: 1031, title: 'Monitor PPIO (派欧云) — potential investment or partnership',
+      desc: 'Only pure-play agent sandbox company in China. Underfunded vs Daytona. Founders have strong PPTV/media-tech pedigree. If they are raising a Series B, worth evaluating for LP syndication or direct investment. Track their funding news on 36Kr and Crunchbase.',
+      owner: 'B', due: 'normal', cat: 'research', done: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    ensure(d.actions, {
+      id: 1032, title: 'Map the Asian vertical agent workflow market',
+      desc: 'Idea 1012: vertical agent workflows (manufacturing QC, financial compliance, supply chain) running on Daytona-equivalent infra. Before building, map who is already in this space in Asia. Search: industrial AI agents China, enterprise agent automation SE Asia, Volcano Engine agent use cases.',
+      owner: 'C', due: 'soon', cat: 'research', done: false,
+      comments: [], ts: '2026-02-24T00:00:00.000Z'
+    });
+
+    localStorage.setItem('vf-data-v1', JSON.stringify(d));
+  } catch(e) { console.error('Init error:', e); }
+})();
+
+load();
+renderDashboard();
+</script>
+<!-- SCAN MODAL -->
+<div class="modal-overlay" id="modal-scan">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-title">
+      <span id="scan-modal-title">📷 Scan Name Card</span>
+      <button class="modal-close" onclick="closeScanModal()">✕</button>
+    </div>
+    <input type="hidden" id="scan-type" value="namecard">
+
+    <!-- Drop zone -->
+    <div id="scan-drop"
+      style="border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:16px;background:var(--surface2)"
+      onclick="document.getElementById('scan-file-input').click()"
+      ondragover="scanDragOver(event)" ondragleave="scanDragLeave()" ondrop="scanDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px">📷</div>
+      <div id="scan-drop-label" style="font-size:12px;color:var(--ink3);line-height:1.5">Drop a name card photo here, or click to browse</div>
+      <div style="font-size:10px;color:var(--ink4);margin-top:6px">Supports JPG, PNG, TXT, MD</div>
+    </div>
+    <input type="file" id="scan-file-input" accept="image/*,.txt,.md" style="display:none" onchange="handleScanFile(event)">
+
+    <div id="scan-preview" style="margin-bottom:10px"></div>
+    <div id="scan-status" style="font-size:12px;color:var(--ink3);margin-bottom:12px;min-height:18px"></div>
+
+    <!-- Result area -->
+    <div id="scan-result-area" style="display:none">
+      <!-- Name card result -->
+      <div id="scan-result-namecard">
+        <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Review & Edit Extracted Data</div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">Name *</div>
+            <input type="text" id="sr-name" placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Organization</div>
+            <input type="text" id="sr-org" placeholder="Company">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">Role / Title</div>
+            <input type="text" id="sr-role" placeholder="Job title">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Email / Phone</div>
+            <input type="text" id="sr-email" placeholder="email or phone">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">Region</div>
+            <select id="sr-region">
+              <option value="china">🇨🇳 China</option>
+              <option value="usa">🇺🇸 USA</option>
+              <option value="both">🌐 Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Type</div>
+            <select id="sr-type">
+              <option value="vc">💰 VC</option>
+              <option value="founder">🚀 Founder</option>
+              <option value="robotics">🤖 Robotics</option>
+              <option value="conf">🎤 Conference</option>
+              <option value="advisor">🧠 Advisor</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <div class="form-label">Additional Notes from Card</div>
+          <textarea id="sr-notes" placeholder="Any extra info extracted from card"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="closeScanModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="confirmScanContact()">✓ Add to Contacts</button>
+        </div>
+      </div>
+
+      <!-- Notes result -->
+      <div id="scan-result-note" style="display:none">
+        <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Review & Edit Extracted Note</div>
+        <div class="form-group" style="margin-bottom:10px">
+          <div class="form-label">Title</div>
+          <input type="text" id="sn-title" placeholder="Note title">
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <div class="form-label">Note Content</div>
+          <textarea id="sn-body" placeholder="Extracted note content" style="min-height:120px"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <div class="form-label">Note Type</div>
+          <select id="sn-type">
+            <option value="general">📝 General</option>
+            <option value="insight">💡 Insight</option>
+            <option value="risk">⚠ Risk</option>
+            <option value="opportunity">🌟 Opportunity</option>
+            <option value="question">❓ Question</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="closeScanModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="confirmScanNote()">✓ Save Note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#scan-drop.drag-over { border-color: var(--idea); background: var(--idea-dim); }
+#scan-drop.drag-over .scan-drop-label { color: var(--idea); }
+</style>
+
+<!-- GLOBAL SEARCH OVERLAY -->
+<div id="global-search-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(10,9,8,0.65);backdrop-filter:blur(4px);animation:fadeIn 0.15s ease" onclick="closeGlobalSearch(event)">
+  <div id="global-search-box" style="position:absolute;top:15vh;left:50%;transform:translateX(-50%);width:min(680px,94vw);background:var(--surface);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,0.28);border:1px solid var(--border-dark);overflow:hidden">
+    <!-- Input row -->
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+      <span style="font-size:18px;color:var(--ink3)">⌕</span>
+      <input id="gs-input" type="text" placeholder="Search contacts, ideas, notes, actions…"
+        style="flex:1;border:none;background:none;font-family:'Geist Mono',monospace;font-size:14px;color:var(--ink);outline:none;font-weight:400"
+        oninput="runGlobalSearch()" onkeydown="gsKeyNav(event)" autocomplete="off">
+      <span id="gs-count" style="font-size:10px;color:var(--ink4);white-space:nowrap"></span>
+      <button onclick="closeGlobalSearch()" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:16px;line-height:1;padding:2px 4px">✕</button>
+    </div>
+    <!-- Filter pills -->
+    <div style="display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface2)">
+      <button class="gs-pill active" data-scope="all" onclick="setGsScope('all',this)">All</button>
+      <button class="gs-pill" data-scope="contacts" onclick="setGsScope('contacts',this)">👤 Contacts</button>
+      <button class="gs-pill" data-scope="ideas" onclick="setGsScope('ideas',this)">💡 Ideas</button>
+      <button class="gs-pill" data-scope="notes" onclick="setGsScope('notes',this)">✎ Notes</button>
+      <button class="gs-pill" data-scope="actions" onclick="setGsScope('actions',this)">▷ Actions</button>
+    </div>
+    <!-- Results -->
+    <div id="gs-results" style="max-height:52vh;overflow-y:auto;padding:8px 0"></div>
+    <!-- Footer hint -->
+    <div style="padding:8px 20px;border-top:1px solid var(--border);background:var(--surface2);display:flex;gap:16px;align-items:center">
+      <span style="font-size:10px;color:var(--ink4)">↑↓ navigate</span>
+      <span style="font-size:10px;color:var(--ink4)">↵ jump to</span>
+      <span style="font-size:10px;color:var(--ink4)">Esc close</span>
+      <span style="font-size:10px;color:var(--ink4);margin-left:auto">Ctrl+K to open</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.gs-pill {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.2px;
+}
+.gs-pill.active, .gs-pill:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.gs-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: 0;
+}
+.gs-result:hover, .gs-result.gs-focused {
+  background: var(--surface2);
+}
+.gs-result-icon {
+  font-size: 15px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+.gs-result-body { flex: 1; min-width: 0; }
+.gs-result-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gs-result-title mark {
+  background: rgba(184,150,10,0.25);
+  color: var(--ink);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.gs-result-sub {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gs-result-sub mark {
+  background: rgba(184,150,10,0.2);
+  color: var(--ink2);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.gs-result-badge {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  align-self: center;
+}
+.gs-section-header {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  padding: 8px 20px 4px;
+}
+.gs-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--ink4);
+  font-size: 12px;
+}
+</style>
+
+<script>
+// ─── GLOBAL SEARCH ────────────────────────────────────────────────
+let gsScope = 'all';
+let gsActiveIdx = -1;
+let gsResultsList = [];
+
+function openGlobalSearch() {
+  const overlay = document.getElementById('global-search-overlay');
+  overlay.style.display = 'block';
+  setTimeout(() => document.getElementById('gs-input').focus(), 50);
+  runGlobalSearch();
+}
+
+function closeGlobalSearch(e) {
+  if (e && e.target !== document.getElementById('global-search-overlay')) return;
+  document.getElementById('global-search-overlay').style.display = 'none';
+  document.getElementById('gs-input').value = '';
+  gsActiveIdx = -1;
+}
+
+function forceCloseSearch() {
+  document.getElementById('global-search-overlay').style.display = 'none';
+  document.getElementById('gs-input').value = '';
+  gsActiveIdx = -1;
+}
+
+function setGsScope(scope, el) {
+  gsScope = scope;
+  document.querySelectorAll('.gs-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  gsActiveIdx = -1;
+  runGlobalSearch();
+}
+
+function highlight(text, q) {
+  if (!q) return esc(text);
+  const safe = esc(text);
+  const safeQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return safe.replace(new RegExp(`(${safeQ})`, 'gi'), '<mark>$1</mark>');
+}
+
+function runGlobalSearch() {
+  const q = document.getElementById('gs-input').value.trim().toLowerCase();
+  gsActiveIdx = -1;
+  gsResultsList = [];
+  const container = document.getElementById('gs-results');
+
+  const regionEmoji = { china:'🇨🇳', usa:'🇺🇸', both:'🌐', unknown:'🌍' };
+  const warmColors = { hot:'var(--china)', warm:'var(--gold)', cold:'var(--usa)', unknown:'var(--ink4)' };
+  const warmLabel = { hot:'🔥 Hot', warm:'◉ Warm', cold:'○ Cold', unknown:'? Unknown' };
+
+  let sections = [];
+
+  const matchStr = (strs, query) => !query || strs.some(s => (s||'').toLowerCase().includes(query));
+
+  // CONTACTS
+  if (gsScope === 'all' || gsScope === 'contacts') {
+    const hits = data.contacts.filter(c => matchStr([c.name, c.org, c.role, c.notes, c.region, c.type], q));
+    if (hits.length) {
+      sections.push({
+        label: 'Contacts',
+        items: hits.map(c => ({
+          icon: '👤',
+          title: c.name + (c.org ? ` · ${c.org}` : ''),
+          sub: (c.role || '') + (c.notes ? ' — ' + c.notes.slice(0, 80) : ''),
+          badge: warmLabel[c.warm] || '',
+          badgeColor: warmColors[c.warm] || 'var(--ink3)',
+          action: () => { forceCloseSearch(); showPage('contacts'); setTimeout(() => { const el = document.querySelector(`.contact-item`); if(el) el.scrollIntoView(); }, 200); }
+        }))
+      });
+    }
+  }
+
+  // IDEAS
+  if (gsScope === 'all' || gsScope === 'ideas') {
+    const hits = data.ideas.filter(i => matchStr([i.title, i.desc, i.source], q));
+    if (hits.length) {
+      sections.push({
+        label: 'Ideas',
+        items: hits.map(i => ({
+          icon: '💡',
+          title: i.title,
+          sub: (i.source ? i.source + ' · ' : '') + (i.desc || '').slice(0, 80),
+          badge: `M${i.market} E${i.exec}`,
+          badgeColor: 'var(--idea)',
+          action: () => { forceCloseSearch(); showPage('ideas'); }
+        }))
+      });
+    }
+  }
+
+  // NOTES
+  if (gsScope === 'all' || gsScope === 'notes') {
+    const hits = data.notes.filter(n => matchStr([n.title, n.body], q));
+    if (hits.length) {
+      sections.push({
+        label: 'Notes',
+        items: hits.map(n => {
+          const typeColors = { insight:'var(--idea)', risk:'var(--china)', opportunity:'var(--gold)', question:'var(--usa)', general:'var(--ink3)' };
+          const typeLabel = { general:'📝', insight:'💡', risk:'⚠', opportunity:'🌟', question:'❓' };
+          return {
+            icon: typeLabel[n.type] || '✎',
+            title: n.title || '(untitled)',
+            sub: (n.body || '').slice(0, 100),
+            badge: n.type,
+            badgeColor: typeColors[n.type] || 'var(--ink3)',
+            action: () => { forceCloseSearch(); showPage('notes'); }
+          };
+        })
+      });
+    }
+  }
+
+  // ACTIONS
+  if (gsScope === 'all' || gsScope === 'actions') {
+    const hits = data.actions.filter(a => matchStr([a.title, a.desc, a.owner], q));
+    if (hits.length) {
+      const dueLabel = { urgent:'🔴 Urgent', soon:'🟡 Soon', normal:'🟢 Normal' };
+      sections.push({
+        label: 'Actions',
+        items: hits.map(a => ({
+          icon: '▷',
+          title: a.title,
+          sub: (a.desc || '').slice(0, 80),
+          badge: (dueLabel[a.due] || a.due) + ' · ' + a.owner,
+          badgeColor: 'var(--action)',
+          action: () => { forceCloseSearch(); showPage('actions'); }
+        }))
+      });
+    }
+  }
+
+  // Build flat list for keyboard nav
+  sections.forEach(sec => sec.items.forEach(item => gsResultsList.push(item)));
+
+  // Count
+  const total = gsResultsList.length;
+  document.getElementById('gs-count').textContent = total ? `${total} result${total===1?'':'s'}` : '';
+
+  if (!total) {
+    container.innerHTML = `<div class="gs-empty">${q ? `No results for "<strong>${esc(q)}</strong>"` : 'Start typing to search across all sections…'}</div>`;
+    return;
+  }
+
+  let html = '';
+  let globalIdx = 0;
+  sections.forEach(sec => {
+    html += `<div class="gs-section-header">${sec.label}</div>`;
+    sec.items.forEach((item, i) => {
+      const idx = globalIdx++;
+      html += `
+        <div class="gs-result" data-idx="${idx}" onclick="gsSelectIdx(${idx})">
+          <div class="gs-result-icon">${item.icon}</div>
+          <div class="gs-result-body">
+            <div class="gs-result-title">${highlight(item.title.replace(/ · .*$/, ''), q)}<span style="color:var(--ink4);font-weight:400">${item.title.includes(' · ') ? ' · ' + highlight(item.title.split(' · ').slice(1).join(' · '), q) : ''}</span></div>
+            ${item.sub ? `<div class="gs-result-sub">${highlight(item.sub, q)}</div>` : ''}
+          </div>
+          ${item.badge ? `<span class="gs-result-badge" style="background:${item.badgeColor}1a;color:${item.badgeColor};border:1px solid ${item.badgeColor}40">${item.badge}</span>` : ''}
+        </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+function gsSelectIdx(idx) {
+  if (gsResultsList[idx]) gsResultsList[idx].action();
+}
+
+function gsKeyNav(e) {
+  const results = document.querySelectorAll('.gs-result');
+  if (e.key === 'Escape') { forceCloseSearch(); return; }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    gsActiveIdx = Math.min(gsActiveIdx + 1, gsResultsList.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    gsActiveIdx = Math.max(gsActiveIdx - 1, 0);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (gsActiveIdx >= 0 && gsResultsList[gsActiveIdx]) gsResultsList[gsActiveIdx].action();
+    return;
+  } else { return; }
+  results.forEach((el, i) => el.classList.toggle('gs-focused', i === gsActiveIdx));
+  results[gsActiveIdx]?.scrollIntoView({ block: 'nearest' });
+}
+
+// Ctrl+K shortcut
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    const overlay = document.getElementById('global-search-overlay');
+    if (overlay.style.display === 'none' || !overlay.style.display) openGlobalSearch();
+    else forceCloseSearch();
+  }
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('global-search-overlay');
+    if (overlay.style.display !== 'none') forceCloseSearch();
+  }
+});
+</script>
+
+</body>
+</html>
