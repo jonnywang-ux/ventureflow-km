@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   if (!name || !slug) return NextResponse.json({ error: 'Missing name or slug' }, { status: 400 })
 
   // Use admin client to bypass RLS for team creation
-  const admin = await createAdminClient()
+  const admin = createAdminClient()
 
   const { data: team, error: teamError } = await admin
     .from('teams')
