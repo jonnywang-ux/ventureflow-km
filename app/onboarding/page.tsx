@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -15,36 +14,25 @@ export default function OnboardingPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
-
     const slug = teamName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
 
-    // Create team
-    const { data: team, error: teamError } = await supabase
-      .from('teams')
-      .insert({ name: teamName, slug, created_by: user.id })
-      .select()
-      .single()
+    const res = await fetch('/api/teams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: teamName, slug }),
+    })
 
-    if (teamError) {
-      setError(teamError.message)
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.error ?? 'Failed to create team')
       setLoading(false)
       return
     }
 
-    // Add creator as admin
-    await supabase.from('team_members').insert({
-      team_id: team.id,
-      user_id: user.id,
-      role: 'admin',
-    })
-
-    router.push(`/${team.slug}`)
+    router.push(`/${data.slug}`)
   }
 
   return (
