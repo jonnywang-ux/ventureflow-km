@@ -36,40 +36,42 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Create your team</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Set up your team workspace to get started.
+    <div style={{ minHeight: '100vh', background: '#f5f2ec', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px' }}>
+      <div style={{ width: '100%', maxWidth: '360px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontFamily: 'var(--font-instrument-serif)', fontSize: '36px', color: '#1a1814', margin: 0, fontWeight: 400 }}>
+            Create your team
+          </h1>
+          <p style={{ fontFamily: 'var(--font-syne)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a857d', marginTop: '8px' }}>
+            Set up your workspace to get started
           </p>
         </div>
-        <form onSubmit={handleCreate} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>
-          )}
-          <div>
-            <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 mb-1">
-              Team name
-            </label>
-            <input
-              id="teamName"
-              type="text"
-              required
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Acme Ventures"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading || !teamName.trim()}
-            className="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Creating...' : 'Create team'}
-          </button>
-        </form>
+
+        <div style={{ background: '#ffffff', border: '1px solid #ddd9d0', borderRadius: '10px', padding: '28px', boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)' }}>
+          <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {error && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', padding: '10px 12px', fontFamily: 'var(--font-geist-mono)', fontSize: '11px', color: '#dc2626' }}>
+                {error}
+              </div>
+            )}
+            <div>
+              <label style={{ display: 'block', fontFamily: 'var(--font-syne)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#4a4640', marginBottom: '6px' }}>
+                Team name
+              </label>
+              <input
+                type="text"
+                required
+                value={teamName}
+                onChange={e => setTeamName(e.target.value)}
+                placeholder="Gunung Capital"
+                className="input"
+              />
+            </div>
+            <button type="submit" disabled={loading || !teamName.trim()} className="btn-primary" style={{ marginTop: '4px' }}>
+              {loading ? 'Creating...' : 'Create team'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

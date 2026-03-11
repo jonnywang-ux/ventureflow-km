@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { LogOut, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useTeam } from '@/lib/hooks/useTeam'
 import { getInitials } from '@/lib/utils'
@@ -18,25 +18,26 @@ export function TopBar() {
   }
 
   return (
-    <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-6 shrink-0">
-      <div className="flex-1" />
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-semibold text-white">
-            {profile.full_name ? getInitials(profile.full_name) : <User className="h-4 w-4" />}
-          </div>
-          <span className="text-sm text-gray-700 font-medium">
-            {profile.full_name ?? profile.email}
+    <header style={{ height: '52px', borderBottom: '1px solid var(--border)', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 24px', flexShrink: 0, gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#1a1814', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <span style={{ fontFamily: 'var(--font-syne)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.06em', color: '#b8960a', textTransform: 'uppercase' }}>
+            {profile.full_name ? getInitials(profile.full_name) : '?'}
           </span>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-          title="Sign out"
-        >
-          <LogOut className="h-4 w-4" />
-        </button>
+        <span style={{ fontFamily: 'var(--font-geist-mono)', fontSize: '11px', color: 'var(--ink-2)', fontWeight: 300 }}>
+          {profile.full_name ?? profile.email}
+        </span>
       </div>
+      <button
+        onClick={handleSignOut}
+        title="Sign out"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '1px solid var(--border)', background: 'transparent', color: 'var(--ink-3)', cursor: 'pointer', transition: 'all 0.15s' }}
+        onMouseEnter={e => { (e.target as HTMLElement).style.borderColor = 'var(--ink)'; (e.target as HTMLElement).style.color = 'var(--ink)' }}
+        onMouseLeave={e => { (e.target as HTMLElement).style.borderColor = 'var(--border)'; (e.target as HTMLElement).style.color = 'var(--ink-3)' }}
+      >
+        <LogOut size={13} />
+      </button>
     </header>
   )
 }

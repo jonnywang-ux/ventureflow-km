@@ -22,61 +22,67 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/onboarding')
+      router.push('/')
       router.refresh()
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">VentureFlow</h1>
-          <p className="mt-2 text-sm text-gray-500">Sign in to your team workspace</p>
+    <div style={{ minHeight: '100vh', background: '#f5f2ec', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px' }}>
+      <div style={{ width: '100%', maxWidth: '360px' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontFamily: 'var(--font-instrument-serif)', fontSize: '36px', color: '#1a1814', margin: 0, fontWeight: 400 }}>
+            VentureFlow
+          </h1>
+          <p style={{ fontFamily: 'var(--font-syne)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a857d', marginTop: '8px' }}>
+            Sign in to your workspace
+          </p>
         </div>
-        <form onSubmit={handleLogin} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>
-          )}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="••••••••"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-indigo-600 hover:underline font-medium">
+
+        {/* Card */}
+        <div style={{ background: '#ffffff', border: '1px solid #ddd9d0', borderRadius: '10px', padding: '28px', boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)' }}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {error && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', padding: '10px 12px', fontFamily: 'var(--font-geist-mono)', fontSize: '11px', color: '#dc2626' }}>
+                {error}
+              </div>
+            )}
+            <div>
+              <label style={{ display: 'block', fontFamily: 'var(--font-syne)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#4a4640', marginBottom: '6px' }}>
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="input"
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontFamily: 'var(--font-syne)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#4a4640', marginBottom: '6px' }}>
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="input"
+              />
+            </div>
+            <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '4px' }}>
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+        </div>
+
+        <p style={{ textAlign: 'center', fontFamily: 'var(--font-geist-mono)', fontSize: '11px', color: '#8a857d', marginTop: '20px' }}>
+          No account?{' '}
+          <Link href="/signup" style={{ color: '#b8960a', textDecoration: 'none', fontWeight: 400 }}>
             Sign up
           </Link>
         </p>

@@ -49,7 +49,7 @@ export default async function TeamLayout({
 
   return (
     <TeamProvider value={{ team, member, profile, role: member.role }}>
-      <div className="flex min-h-screen bg-gray-50">
+      <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)" }}>
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0">
           <TopBar />
