@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 const ALLOWED_TYPES: Record<string, string> = {
   'application/pdf': 'pdf',
@@ -42,10 +42,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `File too large (max ${MAX_SIZE_MB}MB)` }, { status: 400 })
   }
 
-  // Upload to Supabase Storage
+  // Upload to Supabase Storage (admin client bypasses RLS; auth already verified above)
+  const adminSupabase = createAdminClient()
   const storagePath = `${teamId}/${Date.now()}-${file.name}`
   const arrayBuffer = await file.arrayBuffer()
-  const { error: storageError } = await supabase.storage
+  const { error: storageError } = await adminSupabase.storage
     .from('documents')
     .upload(storagePath, arrayBuffer, { contentType: file.type })
 
@@ -53,8 +54,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: storageError.message }, { status: 500 })
   }
 
-  // Create document record
-  const { data: document, error: dbError } = await supabase
+  // Create document record (admin client bypasses RLS; auth already verified above)
+  const { data: document, error: dbError } = await adminSupabase
     .from('documents')
     .insert({
       team_id: teamId,

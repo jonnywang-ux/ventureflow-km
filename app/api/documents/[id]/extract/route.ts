@@ -81,9 +81,27 @@ export async function POST(
       }
     }
 
+    // Auto-create industry segment tags and apply to document
+    const industryTagIds: string[] = []
+    for (const segment of result.industrySegments) {
+      const slug = 'industry-' + segment.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const { data: tag } = await supabase
+        .from('tags')
+        .upsert({ team_id: doc.team_id, name: segment, slug, created_by: user.id }, { onConflict: 'team_id,slug' })
+        .select()
+        .single()
+      if (tag) {
+        await supabase.from('content_tags').upsert(
+          { tag_id: tag.id, content_type: 'document', content_id: id },
+          { onConflict: 'tag_id,content_type,content_id' }
+        )
+        industryTagIds.push(tag.id)
+      }
+    }
+
     // Save extracted contacts
     for (const c of result.contacts) {
-      await supabase.from('contacts').insert({
+      const { data: contact } = await supabase.from('contacts').insert({
         team_id: doc.team_id,
         created_by: user.id,
         name: c.name,
@@ -94,19 +112,49 @@ export async function POST(
         linkedin_url: c.linkedin,
         notes: c.notes,
         source_document_id: id,
+      }).select().single()
+      // Tag contact with industry segments
+      if (contact) {
+        for (const tagId of industryTagIds) {
+          await supabase.from('content_tags').upsert(
+            { tag_id: tagId, content_type: 'contact', content_id: contact.id },
+            { onConflict: 'tag_id,content_type,content_id' }
+          )
+        }
+      }
+    }
+
+    // Save extracted companies as contacts with type=company
+    for (const co of result.companies) {
+      await supabase.from('contacts').insert({
+        team_id: doc.team_id,
+        created_by: user.id,
+        name: co.name,
+        notes: co.description,
+        source_document_id: id,
+        metadata: { type: co.type ?? 'corporate', isCompany: true },
       })
     }
 
     // Save extracted ideas
     for (const idea of result.ideas) {
-      await supabase.from('ideas').insert({
+      const { data: ideaRow } = await supabase.from('ideas').insert({
         team_id: doc.team_id,
         created_by: user.id,
         title: idea.title,
         description: idea.description,
         category: idea.category,
         source_document_id: id,
-      })
+      }).select().single()
+      // Tag idea with industry segments
+      if (ideaRow) {
+        for (const tagId of industryTagIds) {
+          await supabase.from('content_tags').upsert(
+            { tag_id: tagId, content_type: 'idea', content_id: ideaRow.id },
+            { onConflict: 'tag_id,content_type,content_id' }
+          )
+        }
+      }
     }
 
     // Save extracted tasks

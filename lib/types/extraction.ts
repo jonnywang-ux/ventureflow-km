@@ -8,6 +8,12 @@ export interface ExtractedContact {
   notes?: string
 }
 
+export interface ExtractedCompany {
+  name: string
+  type?: 'startup' | 'vc' | 'corporate' | 'accelerator' | 'institution'
+  description?: string
+}
+
 export interface ExtractedIdea {
   title: string
   description: string
@@ -25,7 +31,9 @@ export interface ExtractionResult {
   keyPoints: string[]
   suggestedTags: string[]
   documentType?: string
+  industrySegments: string[]
   contacts: ExtractedContact[]
+  companies: ExtractedCompany[]
   ideas: ExtractedIdea[]
   actions: ExtractedAction[]
 }

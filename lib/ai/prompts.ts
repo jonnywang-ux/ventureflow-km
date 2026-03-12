@@ -12,6 +12,8 @@ Extract the following from the document:
 5. contacts: Array of people mentioned with their details
 6. ideas: Array of business ideas, investment opportunities, or concepts mentioned
 7. actions: Array of specific action items, commitments, or next steps mentioned
+8. industrySegments: Array of 1-4 industry segments that best describe this document (choose from: "AI/ML", "Robotics", "Fintech", "B2B SaaS", "Consumer Tech", "DeepTech", "HealthTech", "CleanTech", "E-commerce", "Enterprise", "Other")
+9. companies: Array of organizations mentioned (startups, VCs, corporates, institutions)
 
 Response format:
 {
@@ -19,6 +21,7 @@ Response format:
   "keyPoints": ["...", "..."],
   "suggestedTags": ["...", "..."],
   "documentType": "...",
+  "industrySegments": ["AI/ML", "Robotics"],
   "contacts": [
     {
       "name": "Full Name",
@@ -28,6 +31,13 @@ Response format:
       "phone": "+1234567890",
       "linkedin": "linkedin.com/in/username",
       "notes": "Context about this person from the document"
+    }
+  ],
+  "companies": [
+    {
+      "name": "Company Name",
+      "type": "startup | vc | corporate | accelerator | institution",
+      "description": "Brief context about this organization from the document"
     }
   ],
   "ideas": [

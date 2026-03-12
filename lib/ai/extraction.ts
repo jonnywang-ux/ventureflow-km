@@ -8,6 +8,7 @@ const ExtractionSchema = z.object({
   keyPoints: z.array(z.string()).default([]),
   suggestedTags: z.array(z.string()).default([]),
   documentType: z.string().optional(),
+  industrySegments: z.array(z.string()).default([]),
   contacts: z
     .array(
       z.object({
@@ -18,6 +19,15 @@ const ExtractionSchema = z.object({
         phone: z.string().optional(),
         linkedin: z.string().optional(),
         notes: z.string().optional(),
+      })
+    )
+    .default([]),
+  companies: z
+    .array(
+      z.object({
+        name: z.string(),
+        type: z.enum(['startup', 'vc', 'corporate', 'accelerator', 'institution']).optional(),
+        description: z.string().optional(),
       })
     )
     .default([]),

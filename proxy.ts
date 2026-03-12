@@ -33,7 +33,7 @@ export async function proxy(request: NextRequest) {
 
   // Auth routes: redirect to app if already logged in
   if (user && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/onboarding', request.url))
+    return NextResponse.redirect(new URL('/ventureflow.html', request.url))
   }
 
   // Protected app routes: redirect to login if not authenticated
@@ -43,7 +43,8 @@ export async function proxy(request: NextRequest) {
     !pathname.startsWith('/invite') &&
     !pathname.startsWith('/_next') &&
     !pathname.startsWith('/api/auth') &&
-    pathname !== '/favicon.ico'
+    pathname !== '/favicon.ico' &&
+    !pathname.endsWith('.html')
 
   if (isAppRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -54,6 +55,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|html)$).*)',
   ],
 }
