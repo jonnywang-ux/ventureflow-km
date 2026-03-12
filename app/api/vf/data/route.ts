@@ -69,10 +69,10 @@ export async function GET() {
     id: n.id,
     title: n.title,
     body: n.content_text || '',
-    type: (n.metadata as Record<string, string>)?.type || 'general',
-    linked: (n.metadata as Record<string, string>)?.linked || null,
-    by: (n.metadata as Record<string, string>)?.by || 'A',
-    pinned: (n.metadata as Record<string, boolean>)?.pinned || false,
+    type: (n.content as Record<string, string>)?.type || 'general',
+    linked: (n.content as Record<string, string>)?.linked || null,
+    by: (n.content as Record<string, string>)?.by || 'A',
+    pinned: (n.content as Record<string, boolean>)?.pinned || false,
     ts: n.created_at,
   }))
 

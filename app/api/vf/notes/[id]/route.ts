@@ -25,14 +25,14 @@ export async function PATCH(
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const { data: existing } = await supabase.from('articles').select('metadata').eq('id', id).single()
-  const meta = (existing?.metadata as Record<string, unknown>) || {}
+  const { data: existing } = await supabase.from('articles').select('content').eq('id', id).single()
+  const meta = (existing?.content as Record<string, unknown>) || {}
 
   const { error } = await supabase.from('articles')
     .update({
       title: body.title,
       content_text: body.body,
-      metadata: { ...meta, type: body.type, linked: body.linked, by: body.by, pinned: body.pinned },
+      content: { ...meta, type: body.type, linked: body.linked, by: body.by, pinned: body.pinned },
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     title: body.title || '(untitled)',
     content_text: body.body || null,
     status: 'draft',
-    metadata: { type: body.type || 'general', linked: body.linked || null, by: body.by, pinned: body.pinned || false },
+    content: { type: body.type || 'general', linked: body.linked || null, by: body.by, pinned: body.pinned || false },
   }).select().single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
